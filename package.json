@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "src/dynamo-converters.js",
   "name": "dynamo-converters",
+  "repository": "https://github.com/chrisguttandin/dynamo-converters.git",
   "scripts": {
     "test": "grunt test"
   },
