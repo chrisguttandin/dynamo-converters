@@ -122,7 +122,9 @@ module.exports = {
         }
 
         for (property in item) {
-            data[property] = convert(item[property]);
+            if (item[property] !== undefined) {
+                data[property] = convert(item[property]);
+            }
         }
 
         return data;
