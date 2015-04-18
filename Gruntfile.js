@@ -20,8 +20,7 @@ module.exports = function (grunt) {
         mochaTest: {
             all: {
                 options: {
-                    reporter: 'spec',
-                    timeout: 0
+                    reporter: 'spec'
                 },
                 require: require('./test/fixtures.js'),
                 src: [
