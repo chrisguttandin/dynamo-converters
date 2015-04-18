@@ -15,7 +15,7 @@
   "scripts": {
     "test": "grunt test"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "devDependencies": {
     "chai": "^2.2.0",
     "grunt": "^0.4.5",
