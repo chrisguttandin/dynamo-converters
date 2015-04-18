@@ -26,7 +26,7 @@ describe('dynamo-converters', function () {
         it('convert a data object into an item', function () {
             var item = converters.dataToItem(global.fixtures.data);
 
-            expect(Object.keys(item)).to.deep.equal(['ears', 'name', 'created', 'modified']);
+            expect(Object.keys(item)).to.deep.equal(['ears', 'map', 'name', 'created', 'modified']);
 
             expect(Object.keys(item.created)).to.deep.equal(['N']);
             expect(item.created).to.be.an('object');
@@ -41,6 +41,8 @@ describe('dynamo-converters', function () {
             expect(parseInt(item.modified.N, 10)).to.be.closeTo(Date.now(), 100);
 
             expect(item.name).to.deep.equal(global.fixtures.item.name);
+
+            expect(item.map).to.deep.equal(global.fixtures.item.map);
         });
 
     });
@@ -86,13 +88,13 @@ describe('dynamo-converters', function () {
     });
 
     describe('itemToData', function () {
-        
+
         it('add no default properties to data at all', function () {
             var data = converters.itemToData({});
 
             expect(data).to.deep.equal({});
         });
-        
+
         it('convert a item into data', function () {
             var data = converters.itemToData(global.fixtures.item);
 

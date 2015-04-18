@@ -7,21 +7,35 @@ module.exports = {
     dataToItem: function (data) {
         var item = {},
             now = Date.now(),
-            property,
-            value;
+            property;
 
-        for (property in data) {
-            value = data[property];
+        function convert(value) {
+            var key,
+                map;
 
             if (typeof value === 'number') {
-                item[property] = {
+                return {
                     N: value.toString()
                 };
+            } else if (typeof value === 'object') {
+                map = {};
+
+                for (key in value) {
+                    map[key] = convert(value[key]);
+                }
+
+                return {
+                    M: map
+                };
             } else if (typeof value === 'string') {
-                item[property] = {
+                return {
                     S: value
                 };
             }
+        }
+
+        for (property in data) {
+            item[property] = convert(data[property]);
         }
 
         item.created = {
@@ -82,20 +96,33 @@ module.exports = {
             property,
             value;
 
-        for (property in item) {
-            value = item[property];
+        function convert(value) {
+            var key,
+                map;
 
-            if (value.N !== undefined) {
+            if (value.M !== undefined) {
+                map = {};
+
+                for (key in value.M) {
+                    map[key] = convert(value.M[key]);
+                }
+
+                return map;
+            } else if (value.N !== undefined) {
                 if (value.N.match(/\./)) {
-                    data[property] = parseFloat(value.N);
+                    return parseFloat(value.N);
                 } else {
-                    data[property] = parseInt(value.N, 10);
+                    return parseInt(value.N, 10);
                 }
             } else if (value.S !== undefined) {
-                data[property] = value.S;
+                return value.S;
             } else if (value.SS !== undefined) {
-                data[property] = value.SS;
+                return value.SS;
             }
+        }
+
+        for (property in item) {
+            data[property] = convert(item[property]);
         }
 
         return data;

@@ -43,6 +43,10 @@ attributes = {
 
 data = {
     ears: 2,
+    map: {
+        something: 1,
+        else: 'text'
+    },
     name: 'rabbit'
 };
 
@@ -66,6 +70,16 @@ item = {
     },
     name: {
         S: 'rabbit'
+    },
+    map: {
+        M: {
+            something: {
+                N: '1'
+            },
+            else: {
+                S: 'text'
+            }
+        }
     }
 };
 
