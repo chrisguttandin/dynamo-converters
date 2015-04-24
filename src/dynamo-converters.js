@@ -1,6 +1,23 @@
 'use strict';
 
-var util = require('util');
+var reservedWords = require('./reserved-words.json'),
+    util = require('util');
+
+function isReservedWord (property) {
+    return reservedWords.some(function (reservedWord) {
+        return reservedWord === property.toUpperCase();
+    });
+}
+
+function formStatement(property, expressionAttributeNames) {
+    if (isReservedWord(property)) {
+        expressionAttributeNames['#' + property] = property;
+
+        return '#' + property + ' = :' + property;
+    }
+
+    return property + ' = :' + property;
+}
 
 module.exports = {
 
@@ -89,6 +106,72 @@ module.exports = {
         }
 
         return attributes;
+    },
+
+    deltaToExpression: function (delta) {
+        var addStatements = [],
+            expressionAttributeNames = {},
+            expressionAttributeValues = {},
+            property,
+            removeStatements = [],
+            setStatements = [],
+            updateExpressions = [],
+            value;
+
+        setStatements.push('modified = :modified');
+        expressionAttributeValues[':modified'] = {
+            N: Date.now().toString()
+        };
+
+        for (property in delta) {
+            value = delta[property];
+
+            if (typeof value === 'number') {
+                setStatements.push(formStatement(property, expressionAttributeNames));
+                expressionAttributeValues[':' + property] = {
+                    N: value.toString()
+                };
+            } else if (typeof value === 'string') {
+                setStatements.push(formStatement(property, expressionAttributeNames));
+                expressionAttributeValues[':' + property] = {
+                    S: value
+                };
+            } else if (util.isArray(value)) {
+                addStatements.push(formStatement(property, expressionAttributeNames));
+                if (typeof value[0] === 'number') {
+                    expressionAttributeValues[':' + property] = {
+                        NN: value.join('x').split('x') // equivalent to calling toString() on each item
+                    };
+                } else {
+                    expressionAttributeValues[':' + property] = {
+                        SS: value
+                    };
+                }
+            } else if (value === undefined) {
+                if (isReservedWord(property)) {
+                    expressionAttributeNames['#' + property] = property;
+                    removeStatements.push('#' + property);
+                } else {
+                    removeStatements.push(property);
+                }
+            }
+        }
+
+        if (addStatements.length > 0) {
+            updateExpressions.push('ADD ' + addStatements.join(', '));
+        }
+        if (removeStatements.length > 0) {
+            updateExpressions.push('REMOVE ' + removeStatements.join(', '));
+        }
+        if (setStatements.length > 0) {
+            updateExpressions.push('SET ' + setStatements.join(', '));
+        }
+
+        return {
+            expressionAttributeNames: (Object.keys(expressionAttributeNames).length > 0) ? expressionAttributeNames : undefined,
+            expressionAttributeValues: expressionAttributeValues,
+            updateExpression: updateExpressions.join(' ')
+        };
     },
 
     itemToData: function (item) {

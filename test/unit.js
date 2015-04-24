@@ -49,40 +49,107 @@ describe('dynamo-converters', function () {
 
     describe('deltaToAttributes()', function () {
 
-        it('add default timestamp to attributes', function () {
+        it('should add modified with the current timestamp as its value', function () {
             var attributes = converters.deltaToAttributes({});
 
-            expect(Object.keys(attributes)).to.deep.equal(['modified']);
-
-            expect(Object.keys(attributes.modified)).to.deep.equal(['Action', 'Value']);
-            expect(attributes.modified.Action).to.equal('PUT');
-
-            expect(Object.keys(attributes.modified.Value)).to.deep.equal(['N']);
-            expect(attributes.modified.Value.N).to.be.an('string');
             expect(parseInt(attributes.modified.Value.N, 10)).to.be.closeTo(Date.now(), 100);
+
+            expect(attributes).to.deep.equal({
+                modified: {
+                    Action: 'PUT',
+                    Value: {
+                        N: attributes.modified.Value.N
+                    }
+                }
+            });
         });
 
-        it('convert a delta into attributes', function () {
+        it('should convert a delta into attributes', function () {
             var attributes = converters.deltaToAttributes(global.fixtures.delta);
 
-            expect(Object.keys(attributes)).to.deep.equal(['ears', 'eyes', 'legs', 'name', 'numbers', 'modified']);
+            expect(attributes).to.deep.equal({
+                ears: {
+                    Action: 'PUT',
+                    Value: {
+                        N: '3'
+                    }
+                },
+                eyes: {
+                    Action: 'DELETE'
+                },
+                legs: {
+                    Action: 'ADD',
+                    Value: {
+                        SS: ['left', 'right']
+                    }
+                },
+                name: {
+                    Action: 'PUT',
+                    Value: {
+                        S: 'atomic rabbit'
+                    }
+                },
+                numbers: {
+                    Action: 'ADD',
+                    Value: {
+                        NN: ['1', '2']
+                    }
+                },
+                modified: {
+                    Action: 'PUT',
+                    Value: {
+                        N: attributes.modified.Value.N
+                    }
+                }
+            });
+        });
 
-            expect(attributes.ears).to.deep.equal(global.fixtures.attributes.ears);
+    });
 
-            expect(attributes.eyes).to.deep.equal(global.fixtures.attributes.eyes);
+    describe('deltaToExpression()', function () {
 
-            expect(attributes.legs).to.deep.equal(global.fixtures.attributes.legs);
+        it('should add modified with the current timestamp as its value', function () {
+            var expression = converters.deltaToExpression({});
 
-            expect(Object.keys(attributes.modified)).to.deep.equal(['Action', 'Value']);
-            expect(attributes.modified.Action).to.equal('PUT');
+            expect(parseInt(expression.expressionAttributeValues[':modified'].N, 10)).to.be.closeTo(Date.now(), 100);
 
-            expect(Object.keys(attributes.modified.Value)).to.deep.equal(['N']);
-            expect(attributes.modified.Value.N).to.be.an('string');
-            expect(parseInt(attributes.modified.Value.N, 10)).to.be.closeTo(Date.now(), 100);
+            expect(expression).to.deep.equal({
+                expressionAttributeNames: undefined,
+                expressionAttributeValues: {
+                    ':modified': {
+                        N: expression.expressionAttributeValues[':modified'].N
+                    }
+                },
+                updateExpression: 'SET modified = :modified'
+            });
+        });
 
-            expect(attributes.name).to.deep.equal(global.fixtures.attributes.name);
+        it('should convert a delta into an expression', function () {
+            var expression = converters.deltaToExpression(global.fixtures.delta);
 
-            expect(attributes.numbers).to.deep.equal(global.fixtures.attributes.numbers);
+            expect(expression).to.deep.equal({
+                expressionAttributeNames: {
+                    '#name': 'name'
+                },
+                expressionAttributeValues: {
+                    ':ears': {
+                        N: '3'
+                    },
+                    ':legs': {
+                        SS: ['left', 'right']
+                    },
+                    ':name': {
+                        S: 'atomic rabbit'
+                    },
+                    ':numbers': {
+                        NN: ['1', '2']
+                    },
+                    ':modified': {
+                        N: expression.expressionAttributeValues[':modified'].N
+                    }
+                },
+                updateExpression: 'ADD legs = :legs, numbers = :numbers REMOVE eyes SET modified = :modified, ears = :ears, #name = :name, modified = :modified'
+            });
         });
 
     });
