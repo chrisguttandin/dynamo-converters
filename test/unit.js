@@ -103,7 +103,7 @@ describe('dynamo-converters', function () {
                         N: expression.expressionAttributeValues[':modified'].N
                     }
                 },
-                updateExpression: 'REMOVE eyes SET modified = :modified, ears = :ears, legs = :legs, #name = :name, numbers = :numbers, modified = :modified'
+                updateExpression: 'REMOVE eyes SET modified = :modified, ears = :ears, legs = :legs, #name = :name, numbers = :numbers'
             });
         });
 
