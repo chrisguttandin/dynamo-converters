@@ -22,7 +22,6 @@ module.exports = function (grunt) {
                 options: {
                     reporter: 'spec'
                 },
-                require: require('./test/fixtures.js'),
                 src: [
                     'test/unit.js'
                 ]

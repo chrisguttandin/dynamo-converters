@@ -7,55 +7,61 @@ describe('dynamo-converters', function () {
 
     describe('dataToItem()', function () {
 
-        it('should add default timestamps to item', function () {
+        it('should add a field called "created" to the item', function () {
             var item = converters.dataToItem({});
 
-            expect(Object.keys(item)).to.deep.equal(['created', 'modified']);
-
-            expect(Object.keys(item.created)).to.deep.equal(['N']);
-            expect(item.created).to.be.an('object');
-            expect(item.created.N).to.be.an('string');
+            expect(item).to.contain.a.key('created');
             expect(parseInt(item.created.N, 10)).to.be.closeTo(Date.now(), 100);
-
-            expect(Object.keys(item.modified)).to.deep.equal(['N']);
-            expect(item.modified).to.be.an('object');
-            expect(item.modified.N).to.be.an('string');
-            expect(parseInt(item.modified.N, 10)).to.be.closeTo(Date.now(), 100);
+            expect(item.created).to.deep.equal({ N: item.created.N });
         });
 
-        it('should convert a data object into an item', function () {
-            var item = converters.dataToItem(global.fixtures.data);
+        it('should add a field called "modified" to the item', function () {
+            var item = converters.dataToItem({});
 
-            expect(Object.keys(item)).to.deep.equal(['ears', 'map', 'name', 'properties', 'created', 'modified']);
-
-            expect(Object.keys(item.created)).to.deep.equal(['N']);
-            expect(item.created).to.be.an('object');
-            expect(item.created.N).to.be.an('string');
-            expect(parseInt(item.created.N, 10)).to.be.closeTo(Date.now(), 100);
-
-            expect(item.ears).to.deep.equal(global.fixtures.item.ears);
-
-            expect(Object.keys(item.modified)).to.deep.equal(['N']);
-            expect(item.modified).to.be.an('object');
-            expect(item.modified.N).to.be.an('string');
+            expect(item).to.contain.a.key('modified');
             expect(parseInt(item.modified.N, 10)).to.be.closeTo(Date.now(), 100);
+            expect(item.modified).to.deep.equal({ N: item.modified.N });
+        });
 
-            expect(item.name).to.deep.equal(global.fixtures.item.name);
+        it('should convert a property of type "number"', function () {
+            var item = converters.dataToItem({ number: 2 });
 
-            expect(item.map).to.deep.equal(global.fixtures.item.map);
+            expect(item.number).to.deep.equal({ N: '2' });
+        });
 
-            expect(item.properties).to.deep.equal(global.fixtures.item.properties);
+        it('should convert a property of type "string"', function () {
+            var item = converters.dataToItem({ string: 'lorem ipsum' });
+
+            expect(item.string).to.deep.equal({ S: 'lorem ipsum' });
+        });
+
+        it('should convert an array', function () {
+            var item = converters.dataToItem({ array: [ 2, 'lorem ipsum' ] });
+
+            expect(item.array).to.deep.equal({ L: [
+                { N: '2' },
+                { S: 'lorem ipsum' }
+            ]});
+        });
+
+        it('should convert an object', function () {
+            var item = converters.dataToItem({ object: { number: 2, string: 'lorem ipsum' }});
+
+            expect(item.object).to.deep.equal({ M: {
+                number: { N: '2' },
+                string: { S: 'lorem ipsum' }
+            }});
         });
 
     });
 
     describe('deltaToExpression()', function () {
 
-        it('should add modified with the current timestamp as its value', function () {
+        it('should add a field called "modified" to the expression', function () {
             var expression = converters.deltaToExpression({});
 
+            expect(expression.expressionAttributeValues).to.contain.a.key(':modified');
             expect(parseInt(expression.expressionAttributeValues[':modified'].N, 10)).to.be.closeTo(Date.now(), 100);
-
             expect(expression).to.deep.equal({
                 expressionAttributeNames: undefined,
                 expressionAttributeValues: {
@@ -67,60 +73,88 @@ describe('dynamo-converters', function () {
             });
         });
 
-        it('should convert a delta into an expression', function () {
-            var expression = converters.deltaToExpression(global.fixtures.delta);
+        it('should convert a property of type "number"', function () {
+            var expression = converters.deltaToExpression({ number: 2 });
 
-            expect(expression).to.deep.equal({
-                expressionAttributeNames: {
-                    '#name': 'name'
-                },
-                expressionAttributeValues: {
-                    ':ears': {
-                        N: '3'
-                    },
-                    ':legs': {
-                        L: [
-                            {
-                                S: 'left'
-                            }, {
-                                S: 'right'
-                            }
-                        ]
-                    },
-                    ':name': {
-                        S: 'atomic rabbit'
-                    },
-                    ':numbers': {
-                        L: [
-                            {
-                                N: '1'
-                            }, {
-                                N: '2'
-                            }
-                        ]
-                    },
-                    ':modified': {
-                        N: expression.expressionAttributeValues[':modified'].N
-                    }
-                },
-                updateExpression: 'REMOVE eyes SET modified = :modified, ears = :ears, legs = :legs, #name = :name, numbers = :numbers'
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#number': 'number' });
+            expect(expression.expressionAttributeValues[':number']).to.deep.equal({
+                N: '2'
             });
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #number = :number');
+        });
+
+        it('should convert a property of type "string"', function () {
+            var expression = converters.deltaToExpression({ string: 'lorem ipsum' });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#string': 'string' });
+            expect(expression.expressionAttributeValues[':string']).to.deep.equal({
+                S: 'lorem ipsum'
+            });
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #string = :string');
+        });
+
+        it('should convert a property of type "undefined"', function () {
+            var expression = converters.deltaToExpression({ undefined: undefined });
+
+            expect(expression.expressionAttributeNames).to.be.undefined;
+            expect(expression.expressionAttributeValues[':undefined']).to.be.undefined;
+            expect(expression.updateExpression).to.equal('REMOVE undefined SET modified = :modified');
+        });
+
+        it('should convert an array', function () {
+            var expression = converters.deltaToExpression({ array: [ 2, 'lorem ipsum' ] });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#array': 'array' });
+            expect(expression.expressionAttributeValues[':array']).to.deep.equal({ L: [
+                { N: '2' },
+                { S: 'lorem ipsum' }
+            ]});
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #array = :array');
+        });
+
+        it('should convert an object', function () {
+            var expression = converters.deltaToExpression({ object: { number: 2, string: 'lorem ipsum' }});
+
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#object': 'object' });
+            expect(expression.expressionAttributeValues[':object']).to.deep.equal({ M: {
+                number: { N: '2' },
+                string: { S: 'lorem ipsum' }
+            }});
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #object = :object');
         });
 
     });
 
     describe('itemToData()', function () {
 
-        it('should add no default properties to data at all', function () {
-            var data = converters.itemToData({});
+        it('should convert a property of type "number"', function () {
+            var data = converters.itemToData({ number: { N: '2' }});
 
-            expect(data).to.deep.equal({});
+            expect(data).to.deep.equal({ number: 2 });
         });
 
-        it('should convert an item into data', function () {
-            var data = converters.itemToData(global.fixtures.item);
+        it('should convert a property of type "string"', function () {
+            var data = converters.itemToData({ string: { S: 'lorem ipsum' }});
 
-            expect(data).to.deep.equal(global.fixtures.data);
+            expect(data).to.deep.equal({ string: 'lorem ipsum' });
+        });
+
+        it('should convert an array', function () {
+            var data = converters.itemToData({ array: { L: [
+                    { N: '2' },
+                    { S: 'lorem ipsum' }
+                ]}});
+
+            expect(data).to.deep.equal({ array: [ 2, 'lorem ipsum' ] });
+        });
+
+        it('should convert an object', function () {
+            var data = converters.itemToData({ object: { M: {
+                    number: { N: '2' },
+                    string: { S: 'lorem ipsum' }
+                }}});
+
+            expect(data).to.deep.equal({ object: { number: 2, string: 'lorem ipsum' }});
         });
 
     });
