@@ -7,7 +7,7 @@ describe('dynamo-converters', function () {
 
     describe('dataToItem()', function () {
 
-        it('add default timestamps to item', function () {
+        it('should add default timestamps to item', function () {
             var item = converters.dataToItem({});
 
             expect(Object.keys(item)).to.deep.equal(['created', 'modified']);
@@ -23,7 +23,7 @@ describe('dynamo-converters', function () {
             expect(parseInt(item.modified.N, 10)).to.be.closeTo(Date.now(), 100);
         });
 
-        it('convert a data object into an item', function () {
+        it('should convert a data object into an item', function () {
             var item = converters.dataToItem(global.fixtures.data);
 
             expect(Object.keys(item)).to.deep.equal(['ears', 'map', 'name', 'properties', 'created', 'modified']);
@@ -109,15 +109,15 @@ describe('dynamo-converters', function () {
 
     });
 
-    describe('itemToData', function () {
+    describe('itemToData()', function () {
 
-        it('add no default properties to data at all', function () {
+        it('should add no default properties to data at all', function () {
             var data = converters.itemToData({});
 
             expect(data).to.deep.equal({});
         });
 
-        it('convert a item into data', function () {
+        it('should convert an item into data', function () {
             var data = converters.itemToData(global.fixtures.item);
 
             expect(data).to.deep.equal(global.fixtures.data);
