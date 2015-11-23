@@ -23,6 +23,12 @@ describe('dynamo-converters', function () {
             expect(item.modified).to.deep.equal({ N: item.modified.N });
         });
 
+        it('should convert a property with a value of "null"', function () {
+            var item = converters.dataToItem({ null: null });
+
+            expect(item.null).to.deep.equal({ NULL: true });
+        });
+
         it('should convert a property of type "boolean"', function () {
             var item = converters.dataToItem({ boolean: true });
 
@@ -77,6 +83,16 @@ describe('dynamo-converters', function () {
                 },
                 updateExpression: 'SET modified = :modified'
             });
+        });
+
+        it('should convert a property with a value of "null"', function () {
+            var expression = converters.deltaToExpression({ null: null });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#null': 'null' });
+            expect(expression.expressionAttributeValues[':null']).to.deep.equal({
+                NULL: true
+            });
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #null = :null');
         });
 
         it('should convert a property of type "boolean"', function () {
@@ -142,6 +158,12 @@ describe('dynamo-converters', function () {
     });
 
     describe('itemToData()', function () {
+
+        it('should convert a property with a value of "null"', function () {
+            var data = converters.itemToData({ null: { NULL: true }});
+
+            expect(data).to.deep.equal({ null: null });
+        });
 
         it('should convert a property of type "boolean"', function () {
             var data = converters.itemToData({ boolean: { B: true }});

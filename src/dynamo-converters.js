@@ -7,6 +7,12 @@ function convert (value) {
     var key,
         map;
 
+    if (value === null) {
+        return {
+            NULL: true
+        };
+    }
+
     if (typeof value === 'boolean') {
         return {
             B: value
@@ -162,6 +168,10 @@ module.exports = {
                 }
 
                 return parseInt(value.N, 10);
+            }
+
+            if (value.NULL === true) {
+                return null;
             }
 
             if (value.S !== undefined) {
