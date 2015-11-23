@@ -7,6 +7,12 @@ function convert (value) {
     var key,
         map;
 
+    if (typeof value === 'boolean') {
+        return {
+            B: value
+        };
+    }
+
     if (typeof value === 'number') {
         return {
             N: value.toString()
@@ -101,7 +107,8 @@ module.exports = {
                 } else {
                     removeStatements.push(property);
                 }
-            } else if (typeof value === 'number' ||
+            } else if (typeof value === 'boolean' ||
+                    typeof value === 'number' ||
                     typeof value === 'string' ||
                     typeof value === 'object') {
                 setStatements.push(formStatement(property, expressionAttributeNames));
@@ -130,6 +137,10 @@ module.exports = {
         function parse (value) {
             var key,
                 map;
+
+            if (value.B !== undefined) {
+                return value.B;
+            }
 
             if (value.L !== undefined) {
                 return value.L.map(parse);

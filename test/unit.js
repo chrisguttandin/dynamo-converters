@@ -23,6 +23,12 @@ describe('dynamo-converters', function () {
             expect(item.modified).to.deep.equal({ N: item.modified.N });
         });
 
+        it('should convert a property of type "boolean"', function () {
+            var item = converters.dataToItem({ boolean: true });
+
+            expect(item.boolean).to.deep.equal({ B: true });
+        });
+
         it('should convert a property of type "number"', function () {
             var item = converters.dataToItem({ number: 2 });
 
@@ -71,6 +77,16 @@ describe('dynamo-converters', function () {
                 },
                 updateExpression: 'SET modified = :modified'
             });
+        });
+
+        it('should convert a property of type "boolean"', function () {
+            var expression = converters.deltaToExpression({ boolean: true });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({ '#boolean': 'boolean' });
+            expect(expression.expressionAttributeValues[':boolean']).to.deep.equal({
+                B: true
+            });
+            expect(expression.updateExpression).to.equal('SET modified = :modified, #boolean = :boolean');
         });
 
         it('should convert a property of type "number"', function () {
@@ -126,6 +142,12 @@ describe('dynamo-converters', function () {
     });
 
     describe('itemToData()', function () {
+
+        it('should convert a property of type "boolean"', function () {
+            var data = converters.itemToData({ boolean: { B: true }});
+
+            expect(data).to.deep.equal({ boolean: true });
+        });
 
         it('should convert a property of type "number"', function () {
             var data = converters.itemToData({ number: { N: '2' }});
