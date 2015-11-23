@@ -11,15 +11,21 @@ function convert (value) {
         return {
             N: value.toString()
         };
-    } else if (typeof value === 'string') {
+    }
+
+    if (typeof value === 'string') {
         return {
             S: value
         };
-    } else if (util.isArray(value)) {
+    }
+
+    if (util.isArray(value)) {
         return {
             L: value.map(convert)
         };
-    } else if (typeof value === 'object') {
+    }
+
+    if (typeof value === 'object') {
         map = {};
 
         for (key in value) {
@@ -29,9 +35,9 @@ function convert (value) {
         return {
             M: map
         };
-    } else {
-        throw new Error('Unsupported data type');
     }
+
+    throw new Error('Unsupported data type');
 }
 
 function isReservedWord (property) {
@@ -127,7 +133,9 @@ module.exports = {
 
             if (value.L !== undefined) {
                 return value.L.map(parse);
-            } else if (value.M !== undefined) {
+            }
+
+            if (value.M !== undefined) {
                 map = {};
 
                 for (key in value.M) {
@@ -135,15 +143,21 @@ module.exports = {
                 }
 
                 return map;
-            } else if (value.N !== undefined) {
+            }
+
+            if (value.N !== undefined) {
                 if (value.N.match(/\./)) {
                     return parseFloat(value.N);
-                } else {
-                    return parseInt(value.N, 10);
                 }
-            } else if (value.S !== undefined) {
+
+                return parseInt(value.N, 10);
+            }
+
+            if (value.S !== undefined) {
                 return value.S;
             }
+
+            throw new Error('Unsupported data type');
         }
 
         for (property in item) {
