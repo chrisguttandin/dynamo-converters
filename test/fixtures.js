@@ -16,11 +16,18 @@ attributes = {
         'Action': 'DELETE'
     },
     legs: {
-        'Action': 'ADD',
+        'Action': 'PUT',
         'Value': {
-            'SS': [
-                'left',
-                'right'
+            'L': [
+                {
+                    'Value': {
+                        'S': 'left'
+                    }
+                }, {
+                    'Value': {
+                        'S': 'right'
+                    }
+                }
             ]
         }
     },
@@ -31,11 +38,18 @@ attributes = {
         }
     },
     numbers: {
-        'Action': 'ADD',
+        'Action': 'PUT',
         'Value': {
-            'NN': [
-                '1',
-                '2'
+            'L': [
+                {
+                    'Value': {
+                        'N': '1'
+                    }
+                }, {
+                    'Value': {
+                        'N': '2'
+                    }
+                }
             ]
         }
     }
@@ -47,7 +61,11 @@ data = {
         something: 1,
         else: 'text'
     },
-    name: 'rabbit'
+    name: 'rabbit',
+    properties: [
+        'cute',
+        'speedy'
+    ]
 };
 
 delta = {
@@ -80,6 +98,15 @@ item = {
                 S: 'text'
             }
         }
+    },
+    properties: {
+        L: [
+            {
+                S: 'cute'
+            }, {
+                S: 'speedy'
+            }
+        ]
     }
 };
 

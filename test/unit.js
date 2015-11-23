@@ -26,7 +26,7 @@ describe('dynamo-converters', function () {
         it('convert a data object into an item', function () {
             var item = converters.dataToItem(global.fixtures.data);
 
-            expect(Object.keys(item)).to.deep.equal(['ears', 'map', 'name', 'created', 'modified']);
+            expect(Object.keys(item)).to.deep.equal(['ears', 'map', 'name', 'properties', 'created', 'modified']);
 
             expect(Object.keys(item.created)).to.deep.equal(['N']);
             expect(item.created).to.be.an('object');
@@ -43,6 +43,8 @@ describe('dynamo-converters', function () {
             expect(item.name).to.deep.equal(global.fixtures.item.name);
 
             expect(item.map).to.deep.equal(global.fixtures.item.map);
+
+            expect(item.properties).to.deep.equal(global.fixtures.item.properties);
         });
 
     });
@@ -78,9 +80,15 @@ describe('dynamo-converters', function () {
                     Action: 'DELETE'
                 },
                 legs: {
-                    Action: 'ADD',
+                    Action: 'PUT',
                     Value: {
-                        SS: ['left', 'right']
+                        L: [
+                            {
+                                S: 'left'
+                            }, {
+                                S: 'right'
+                            }
+                        ]
                     }
                 },
                 name: {
@@ -90,9 +98,15 @@ describe('dynamo-converters', function () {
                     }
                 },
                 numbers: {
-                    Action: 'ADD',
+                    Action: 'PUT',
                     Value: {
-                        NN: ['1', '2']
+                        L: [
+                            {
+                                N: '1'
+                            }, {
+                                N: '2'
+                            }
+                        ]
                     }
                 },
                 modified: {
@@ -136,19 +150,31 @@ describe('dynamo-converters', function () {
                         N: '3'
                     },
                     ':legs': {
-                        SS: ['left', 'right']
+                        L: [
+                            {
+                                S: 'left'
+                            }, {
+                                S: 'right'
+                            }
+                        ]
                     },
                     ':name': {
                         S: 'atomic rabbit'
                     },
                     ':numbers': {
-                        NN: ['1', '2']
+                        L: [
+                            {
+                                N: '1'
+                            }, {
+                                N: '2'
+                            }
+                        ]
                     },
                     ':modified': {
                         N: expression.expressionAttributeValues[':modified'].N
                     }
                 },
-                updateExpression: 'ADD legs = :legs, numbers = :numbers REMOVE eyes SET modified = :modified, ears = :ears, #name = :name, modified = :modified'
+                updateExpression: 'REMOVE eyes SET modified = :modified, ears = :ears, legs = :legs, #name = :name, numbers = :numbers, modified = :modified'
             });
         });
 
