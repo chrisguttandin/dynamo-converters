@@ -1,59 +1,8 @@
 'use strict';
 
-var attributes,
-    data,
+var data,
     delta,
     item;
-
-attributes = {
-    ears: {
-        'Action': 'PUT',
-        'Value': {
-            'N': '3'
-        }
-    },
-    eyes: {
-        'Action': 'DELETE'
-    },
-    legs: {
-        'Action': 'PUT',
-        'Value': {
-            'L': [
-                {
-                    'Value': {
-                        'S': 'left'
-                    }
-                }, {
-                    'Value': {
-                        'S': 'right'
-                    }
-                }
-            ]
-        }
-    },
-    name: {
-        'Action': 'PUT',
-        'Value': {
-            'S': 'atomic rabbit'
-        }
-    },
-    numbers: {
-        'Action': 'PUT',
-        'Value': {
-            'L': [
-                {
-                    'Value': {
-                        'N': '1'
-                    }
-                }, {
-                    'Value': {
-                        'N': '2'
-                    }
-                }
-            ]
-        }
-    }
-};
 
 data = {
     ears: 2,
@@ -114,7 +63,6 @@ if (global.fixtures === undefined) {
     global.fixtures = {};
 }
 
-global.fixtures.attributes = attributes;
 global.fixtures.data = data;
 global.fixtures.delta = delta;
 global.fixtures.item = item;

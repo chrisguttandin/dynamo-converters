@@ -71,33 +71,6 @@ module.exports = {
         return item;
     },
 
-    deltaToAttributes: function (delta) {
-        var attribute,
-            attributes = {},
-            property,
-            value;
-
-        delta.modified = Date.now();
-
-        for (property in delta) {
-            attribute = {};
-            value = delta[property];
-
-            if (value === undefined) {
-                attribute.Action = 'DELETE';
-            } else if (typeof value === 'number' ||
-                    typeof value === 'string' ||
-                    typeof value === 'object') {
-                attribute.Action = 'PUT';
-                attribute.Value = convert(value);
-            }
-
-            attributes[property] = attribute;
-        }
-
-        return attributes;
-    },
-
     deltaToExpression: function (delta) {
         var expressionAttributeNames = {},
             expressionAttributeValues = {},
