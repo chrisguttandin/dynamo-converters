@@ -32,7 +32,7 @@ describe('dynamo-converters', function () {
         it('should convert a property of type "boolean"', function () {
             var item = converters.dataToItem({ boolean: true });
 
-            expect(item.boolean).to.deep.equal({ B: true });
+            expect(item.boolean).to.deep.equal({ BOOL: true });
         });
 
         it('should convert a property of type "number"', function () {
@@ -100,7 +100,7 @@ describe('dynamo-converters', function () {
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#boolean': 'boolean' });
             expect(expression.expressionAttributeValues[':boolean']).to.deep.equal({
-                B: true
+                BOOL: true
             });
             expect(expression.updateExpression).to.equal('SET modified = :modified, #boolean = :boolean');
         });
@@ -166,7 +166,7 @@ describe('dynamo-converters', function () {
         });
 
         it('should convert a property of type "boolean"', function () {
-            var data = converters.itemToData({ boolean: { B: true }});
+            var data = converters.itemToData({ boolean: { BOOL: true }});
 
             expect(data).to.deep.equal({ boolean: true });
         });

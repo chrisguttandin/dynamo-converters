@@ -15,7 +15,7 @@ function convert (value) {
 
     if (typeof value === 'boolean') {
         return {
-            B: value
+            BOOL: value
         };
     }
 
@@ -144,8 +144,8 @@ module.exports = {
             var key,
                 map;
 
-            if (value.B !== undefined) {
-                return value.B;
+            if (value.BOOL !== undefined) {
+                return value.BOOL;
             }
 
             if (value.L !== undefined) {
