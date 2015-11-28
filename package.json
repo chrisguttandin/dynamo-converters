@@ -10,7 +10,7 @@
     "mocha": "^2.3.4"
   },
   "engines": {
-    "node" : ">=0.10.36"
+    "node": ">=0.10.36"
   },
   "homepage": "https://github.com/chrisguttandin/dynamo-converters",
   "keywords": [
@@ -27,5 +27,5 @@
   "scripts": {
     "test": "grunt test"
   },
-  "version": "2.1.0"
+  "version": "2.1.1"
 }
