@@ -1,6 +1,9 @@
 {
   "author": "Christoph Guttandin",
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
+  "engines": {
+    "node" : ">=0.10.36"
+  },
   "keywords": [
     "aws",
     "DynamoDB"
