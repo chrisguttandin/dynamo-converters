@@ -6,7 +6,7 @@
   },
   "keywords": [
     "aws",
-    "DynamoDB"
+    "dynamodb"
   ],
   "license": "MIT",
   "main": "src/dynamo-converters.js",
