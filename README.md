@@ -2,7 +2,7 @@
 
 **A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.**
 
-[![tests](https://img.shields.io/travis/chrisguttandin/dynamo-converters.svg?style=flat-square)](https://travis-ci.org/chrisguttandin/dynamo-converters)
+[![tests](https://img.shields.io/travis/chrisguttandin/dynamo-converters/master.svg?style=flat-square)](https://travis-ci.org/chrisguttandin/dynamo-converters)
 [![dependencies](https://img.shields.io/david/chrisguttandin/dynamo-converters.svg?style=flat-square)](https://www.npmjs.com/package/dynamo-converters)
 [![version](https://img.shields.io/npm/v/dynamo-converters.svg?style=flat-square)](https://www.npmjs.com/package/dynamo-converters)
 
