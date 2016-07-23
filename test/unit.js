@@ -30,7 +30,7 @@ describe('dynamo-converters', function () {
         });
 
         it('should not convert a property with a value of "undefined"', function () {
-            var item = converters.dataToItem({ undefined: undefined });
+            var item = converters.dataToItem({ nothing: undefined });
 
             expect(item).to.have.keys('created', 'modified');
         });
@@ -72,7 +72,7 @@ describe('dynamo-converters', function () {
         });
 
         it('should not convert a property of an object with a value of "undefined"', function () {
-            var item = converters.dataToItem({ object: { undefined: undefined }});
+            var item = converters.dataToItem({ object: { nothing: undefined }});
 
             expect(item.object).to.deep.equal({ M : {}});
         });
@@ -138,11 +138,11 @@ describe('dynamo-converters', function () {
         });
 
         it('should convert a property of type "undefined"', function () {
-            var expression = converters.deltaToExpression({ undefined: undefined });
+            var expression = converters.deltaToExpression({ nothing: undefined });
 
             expect(expression.expressionAttributeNames).to.be.undefined;
-            expect(expression.expressionAttributeValues[':undefined']).to.be.undefined;
-            expect(expression.updateExpression).to.equal('REMOVE undefined SET modified = :modified');
+            expect(expression.expressionAttributeValues[':nothing']).to.be.undefined;
+            expect(expression.updateExpression).to.equal('REMOVE nothing SET modified = :modified');
         });
 
         it('should convert an array', function () {
