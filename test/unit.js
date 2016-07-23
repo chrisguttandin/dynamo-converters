@@ -29,6 +29,12 @@ describe('dynamo-converters', function () {
             expect(item.null).to.deep.equal({ NULL: true });
         });
 
+        it('should not convert a property with a value of "undefined"', function () {
+            var item = converters.dataToItem({ undefined: undefined });
+
+            expect(item).to.have.keys('created', 'modified');
+        });
+
         it('should convert a property of type "boolean"', function () {
             var item = converters.dataToItem({ boolean: true });
 
@@ -63,6 +69,12 @@ describe('dynamo-converters', function () {
                 number: { N: '2' },
                 string: { S: 'lorem ipsum' }
             }});
+        });
+
+        it('should not convert a property of an object with a value of "undefined"', function () {
+            var item = converters.dataToItem({ object: { undefined: undefined }});
+
+            expect(item.object).to.deep.equal({ M : {}});
         });
 
     });

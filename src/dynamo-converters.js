@@ -41,7 +41,9 @@ function convert (value) {
         map = {};
 
         for (key in value) {
-            map[key] = convert(value[key]);
+            if (value[key] !== undefined) {
+                map[key] = convert(value[key]);
+            }
         }
 
         return {
@@ -76,7 +78,9 @@ module.exports = {
             property;
 
         for (property in data) {
-            item[property] = convert(data[property]);
+            if (data[property] !== undefined) {
+                item[property] = convert(data[property]);
+            }
         }
 
         item.created = {
