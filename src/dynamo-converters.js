@@ -72,7 +72,7 @@ function formStatement (property, expressionAttributeNames) {
 
 module.exports = {
 
-    dataToItem: function (data) {
+    dataToItem: function (data) { // eslint-disable-line object-shorthand
         var item = {},
             now = Date.now(),
             property;
@@ -93,7 +93,7 @@ module.exports = {
         return item;
     },
 
-    deltaToExpression: function (delta) {
+    deltaToExpression: function (delta) { // eslint-disable-line object-shorthand
         var expressionAttributeNames = {},
             expressionAttributeValues = {},
             property,
@@ -135,12 +135,12 @@ module.exports = {
 
         return {
             expressionAttributeNames: (Object.keys(expressionAttributeNames).length > 0) ? expressionAttributeNames : undefined,
-            expressionAttributeValues: expressionAttributeValues,
+            expressionAttributeValues: expressionAttributeValues, // eslint-disable-line object-shorthand
             updateExpression: updateExpressions.join(' ')
         };
     },
 
-    itemToData: function (item) {
+    itemToData: function (item) { // eslint-disable-line object-shorthand
         var data = {},
             property;
 

@@ -1,7 +1,7 @@
 'use strict';
 
-var expect = require('chai').expect,
-    converters = require('../src/dynamo-converters.js');
+var converters = require('../src/dynamo-converters.js'),
+    expect = require('chai').expect;
 
 describe('dynamo-converters', function () {
 
@@ -59,22 +59,22 @@ describe('dynamo-converters', function () {
             expect(item.array).to.deep.equal({ L: [
                 { N: '2' },
                 { S: 'lorem ipsum' }
-            ]});
+            ] });
         });
 
         it('should convert an object', function () {
-            var item = converters.dataToItem({ object: { number: 2, string: 'lorem ipsum' }});
+            var item = converters.dataToItem({ object: { number: 2, string: 'lorem ipsum' } });
 
             expect(item.object).to.deep.equal({ M: {
                 number: { N: '2' },
                 string: { S: 'lorem ipsum' }
-            }});
+            } });
         });
 
         it('should not convert a property of an object with a value of "undefined"', function () {
-            var item = converters.dataToItem({ object: { nothing: undefined }});
+            var item = converters.dataToItem({ object: { nothing: undefined } });
 
-            expect(item.object).to.deep.equal({ M : {}});
+            expect(item.object).to.deep.equal({ M : {} });
         });
 
     });
@@ -152,18 +152,18 @@ describe('dynamo-converters', function () {
             expect(expression.expressionAttributeValues[':array']).to.deep.equal({ L: [
                 { N: '2' },
                 { S: 'lorem ipsum' }
-            ]});
+            ] } );
             expect(expression.updateExpression).to.equal('SET modified = :modified, #array = :array');
         });
 
         it('should convert an object', function () {
-            var expression = converters.deltaToExpression({ object: { number: 2, string: 'lorem ipsum' }});
+            var expression = converters.deltaToExpression({ object: { number: 2, string: 'lorem ipsum' } });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#object': 'object' });
             expect(expression.expressionAttributeValues[':object']).to.deep.equal({ M: {
                 number: { N: '2' },
                 string: { S: 'lorem ipsum' }
-            }});
+            } });
             expect(expression.updateExpression).to.equal('SET modified = :modified, #object = :object');
         });
 
@@ -172,45 +172,49 @@ describe('dynamo-converters', function () {
     describe('itemToData()', function () {
 
         it('should convert a property with a value of "null"', function () {
-            var data = converters.itemToData({ null: { NULL: true }});
+            var data = converters.itemToData({ null: { NULL: true } });
 
             expect(data).to.deep.equal({ null: null });
         });
 
         it('should convert a property of type "boolean"', function () {
-            var data = converters.itemToData({ boolean: { BOOL: true }});
+            var data = converters.itemToData({ boolean: { BOOL: true } });
 
             expect(data).to.deep.equal({ boolean: true });
         });
 
         it('should convert a property of type "number"', function () {
-            var data = converters.itemToData({ number: { N: '2' }});
+            var data = converters.itemToData({ number: { N: '2' } });
 
             expect(data).to.deep.equal({ number: 2 });
         });
 
         it('should convert a property of type "string"', function () {
-            var data = converters.itemToData({ string: { S: 'lorem ipsum' }});
+            var data = converters.itemToData({ string: { S: 'lorem ipsum' } });
 
             expect(data).to.deep.equal({ string: 'lorem ipsum' });
         });
 
         it('should convert an array', function () {
+            /* eslint-disable indent */
             var data = converters.itemToData({ array: { L: [
                     { N: '2' },
                     { S: 'lorem ipsum' }
-                ]}});
+                ] } });
+                /* eslint-enable indent */
 
             expect(data).to.deep.equal({ array: [ 2, 'lorem ipsum' ] });
         });
 
         it('should convert an object', function () {
+            /* eslint-disable indent */
             var data = converters.itemToData({ object: { M: {
                     number: { N: '2' },
                     string: { S: 'lorem ipsum' }
-                }}});
+                } } });
+            /* eslint-enable indent */
 
-            expect(data).to.deep.equal({ object: { number: 2, string: 'lorem ipsum' }});
+            expect(data).to.deep.equal({ object: { number: 2, string: 'lorem ipsum' } });
         });
 
     });

@@ -3,18 +3,31 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        jshint: {
+        eslint: {
+            config: {
+                options: {
+                    configFile: 'config/eslint/config.json'
+                },
+                src: [
+                    '*.js',
+                    'config/**/*.js'
+                ]
+            },
             src: {
                 options: {
-                    jshintrc: 'src/.jshintrc'
+                    configFile: 'config/eslint/src.json'
                 },
-                src: ['*.js', 'src/*.js']
+                src: [
+                    'src/**/*.js'
+                ]
             },
             test: {
                 options: {
-                    jshintrc: 'test/.jshintrc'
+                    configFile: 'config/eslint/test.json'
                 },
-                src: ['test/*.js']
+                src: [
+                    'test/**/*.js'
+                ]
             }
         },
         mochaTest: {
@@ -29,8 +42,8 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('gruntify-eslint');
 
     grunt.registerTask('test', [
         'mochaTest'
