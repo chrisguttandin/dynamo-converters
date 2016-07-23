@@ -52,6 +52,7 @@ because the resulting item structure is most likely used to put an item into a D
 ```js
 var data = {
         object: {
+            nothing: undefined,
             number: 2,
             string: 'lorem ipsum'
         }
@@ -94,6 +95,7 @@ contains no reserved word this property will be missing.
 
 ```js
 var delta = {
+        nothing: undefined,
         object: {
             number: 2,
             string: 'lorem ipsum'
@@ -121,7 +123,7 @@ console.log(dynamoConverters.deltaToExpression(delta));
 //             }
 //         }
 //     },
-//     updateExpression: 'SET modified = :modified, #object = :object'
+//     updateExpression: 'REMOVE nothing SET modified = :modified, #object = :object'
 // }
 ```
 
