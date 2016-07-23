@@ -1,7 +1,6 @@
 'use strict';
 
-var converters = require('../src/dynamo-converters.js'),
-    expect = require('chai').expect;
+var converters = require('../src/dynamo-converters.js');
 
 describe('dynamo-converters', function () {
 
