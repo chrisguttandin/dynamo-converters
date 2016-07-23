@@ -6,9 +6,9 @@
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
     "chai": "^3.4.1",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "^0.11.3",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jshint": "^1.0.0",
     "grunt-mocha-test": "^0.12.7",
     "mocha": "^2.3.4"
   },
