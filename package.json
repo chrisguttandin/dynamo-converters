@@ -6,7 +6,7 @@
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
     "chai": "^3.4.1",
-    "eslint-config-holy-grail": "^9.0.0",
+    "eslint-config-holy-grail": "^10.0.0",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-githooks": "0.0.2",
