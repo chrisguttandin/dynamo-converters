@@ -1,12 +1,9 @@
 'use strict';
 
-var reservedWords = require('./reserved-words.json'),
-    util = require('util');
+const reservedWords = require('./reserved-words.json');
+const util = require('util');
 
 function convert (value) {
-    var key,
-        map;
-
     if (value === null) {
         return {
             NULL: true
@@ -38,9 +35,9 @@ function convert (value) {
     }
 
     if (typeof value === 'object') {
-        map = {};
+        const map = {};
 
-        for (key in value) {
+        for (const key in value) {
             if (value[key] !== undefined) {
                 map[key] = convert(value[key]);
             }
@@ -73,11 +70,10 @@ function formStatement (property, expressionAttributeNames) {
 module.exports = {
 
     dataToItem: function (data) { // eslint-disable-line object-shorthand
-        var item = {},
-            now = Date.now(),
-            property;
+        const item = {};
+        const now = Date.now();
 
-        for (property in data) {
+        for (const property in data) {
             if (data[property] !== undefined) {
                 item[property] = convert(data[property]);
             }
@@ -94,21 +90,19 @@ module.exports = {
     },
 
     deltaToExpression: function (delta) { // eslint-disable-line object-shorthand
-        var expressionAttributeNames = {},
-            expressionAttributeValues = {},
-            property,
-            removeStatements = [],
-            setStatements = [],
-            updateExpressions = [],
-            value;
+        const expressionAttributeNames = {};
+        const expressionAttributeValues = {};
+        const removeStatements = [];
+        const setStatements = [];
+        const updateExpressions = [];
 
         setStatements.push('modified = :modified');
         expressionAttributeValues[':modified'] = {
             N: Date.now().toString()
         };
 
-        for (property in delta) {
-            value = delta[property];
+        for (const property in delta) {
+            const value = delta[property];
 
             if (value === undefined) {
                 if (isReservedWord(property)) {
@@ -141,13 +135,9 @@ module.exports = {
     },
 
     itemToData: function (item) { // eslint-disable-line object-shorthand
-        var data = {},
-            property;
+        const data = {};
 
         function parse (value) {
-            var key,
-                map;
-
             if (value.BOOL !== undefined) {
                 return value.BOOL;
             }
@@ -157,9 +147,9 @@ module.exports = {
             }
 
             if (value.M !== undefined) {
-                map = {};
+                const map = {};
 
-                for (key in value.M) {
+                for (const key in value.M) {
                     map[key] = parse(value.M[key]);
                 }
 
@@ -185,7 +175,7 @@ module.exports = {
             throw new Error('Unsupported data type');
         }
 
-        for (property in item) {
+        for (const property in item) {
             if (item[property] !== undefined) {
                 data[property] = parse(item[property]);
             }
