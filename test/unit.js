@@ -1,6 +1,6 @@
 'use strict';
 
-const converters = require('../src/dynamo-converters.js');
+const converters = require('../src/module.js');
 
 describe('dynamo-converters', function () {
 

@@ -24,7 +24,7 @@
     "dynamodb"
   ],
   "license": "MIT",
-  "main": "src/dynamo-converters.js",
+  "main": "src/module.js",
   "name": "dynamo-converters",
   "repository": {
     "type": "git",
