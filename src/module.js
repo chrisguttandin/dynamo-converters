@@ -1,5 +1,3 @@
-'use strict';
-
 const reservedWords = require('./reserved-words.json');
 const util = require('util');
 

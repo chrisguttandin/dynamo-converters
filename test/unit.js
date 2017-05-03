@@ -1,5 +1,3 @@
-'use strict';
-
 const converters = require('../src/module.js');
 
 describe('dynamo-converters', function () {
