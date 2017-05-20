@@ -18,6 +18,9 @@
   "engines": {
     "node": ">=6.10.3"
   },
+  "files": [
+    "src/"
+  ],
   "homepage": "https://github.com/chrisguttandin/dynamo-converters",
   "keywords": [
     "aws",
