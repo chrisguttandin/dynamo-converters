@@ -5,7 +5,7 @@
   },
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
-    "chai": "^4.1.1",
+    "chai": "^4.1.2",
     "eslint-config-holy-grail": "^20.0.0",
     "greenkeeper-lockfile": "^1.8.1",
     "grunt": "^1.0.1",
