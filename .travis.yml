@@ -6,4 +6,4 @@ node_js: 6
 sudo: false
 env:
   global:
-    secure: HDCD2/Q9yTJEbld9fQ8pZ9FIrZVbcmXIgl9glMj0yohOye/dE7almPVWHJblrocsL/0PeyT4adQZd/Y6nDVs2khjuQI9y0mfwpvYJpNeCfcr8hZ9OnTKUOu9kFpHpGkw5AXQ2RhX4lAlATWV8h/g6tkZrZfgE2kbVBSHGcvxJ7I=
+  - secure: HDCD2/Q9yTJEbld9fQ8pZ9FIrZVbcmXIgl9glMj0yohOye/dE7almPVWHJblrocsL/0PeyT4adQZd/Y6nDVs2khjuQI9y0mfwpvYJpNeCfcr8hZ9OnTKUOu9kFpHpGkw5AXQ2RhX4lAlATWV8h/g6tkZrZfgE2kbVBSHGcvxJ7I=
