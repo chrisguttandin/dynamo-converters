@@ -3,6 +3,11 @@
   "bugs": {
     "url": "https://github.com/chrisguttandin/dynamo-converters/issues"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
     "@commitlint/cli": "^6.1.3",
