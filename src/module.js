@@ -1,5 +1,4 @@
 const reservedWords = require('./reserved-words.json');
-const util = require('util');
 
 function convert (value) {
     if (value === null) {
@@ -26,7 +25,7 @@ function convert (value) {
         };
     }
 
-    if (util.isArray(value)) {
+    if (Array.isArray(value)) {
         return {
             L: value.map(convert)
         };
