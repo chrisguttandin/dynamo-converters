@@ -9,5 +9,7 @@ env:
     - secure: HDCD2/Q9yTJEbld9fQ8pZ9FIrZVbcmXIgl9glMj0yohOye/dE7almPVWHJblrocsL/0PeyT4adQZd/Y6nDVs2khjuQI9y0mfwpvYJpNeCfcr8hZ9OnTKUOu9kFpHpGkw5AXQ2RhX4lAlATWV8h/g6tkZrZfgE2kbVBSHGcvxJ7I=
 install: npm ci || (rm -rf node_modules && npm install)
 language: node_js
-node_js: 8
+node_js:
+- 8
+- 10
 sudo: false
