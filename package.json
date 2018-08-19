@@ -34,8 +34,8 @@
   ],
   "homepage": "https://github.com/chrisguttandin/dynamo-converters",
   "keywords": [
-    "aws",
-    "dynamodb"
+    "AWS",
+    "DynamoDB"
   ],
   "license": "MIT",
   "main": "src/module.js",
