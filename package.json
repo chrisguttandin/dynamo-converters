@@ -10,7 +10,7 @@
   },
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
-    "@commitlint/cli": "^7.0.0",
+    "@commitlint/cli": "^7.1.1",
     "@commitlint/config-angular": "^7.0.1",
     "chai": "^4.1.2",
     "commitizen": "^2.10.1",
