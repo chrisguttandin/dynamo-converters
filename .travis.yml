@@ -1,6 +1,4 @@
-after_script: greenkeeper-lockfile-upload
 before_install: npm install npm@latest --global
-before_script: greenkeeper-lockfile-update
 cache:
   directories:
     - $HOME/.npm
@@ -10,6 +8,6 @@ env:
 install: npm ci || (rm -rf node_modules && npm install)
 language: node_js
 node_js:
-- 8
-- 10
+  - 8
+  - 10
 sudo: false
