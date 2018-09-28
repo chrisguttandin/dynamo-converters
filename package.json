@@ -32,6 +32,11 @@
     "src/"
   ],
   "homepage": "https://github.com/chrisguttandin/dynamo-converters",
+  "husky": {
+    "hooks": {
+      "pre-commit": "grunt lint"
+    }
+  },
   "keywords": [
     "AWS",
     "DynamoDB"
@@ -44,7 +49,6 @@
     "url": "https://github.com/chrisguttandin/dynamo-converters.git"
   },
   "scripts": {
-    "precommit": "grunt lint",
     "test": "grunt lint && grunt test"
   },
   "types": "src/module.d.ts",
