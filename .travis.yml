@@ -10,4 +10,4 @@ language: node_js
 node_js:
   - 8
   - 11
-sudo: false
+sudo: required
