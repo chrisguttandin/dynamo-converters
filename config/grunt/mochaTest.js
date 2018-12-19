@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 const chai = require('chai');
 
 module.exports = {
