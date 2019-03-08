@@ -19,7 +19,6 @@
     "eslint-config-holy-grail": "^34.0.0",
     "grunt": "^1.0.3",
     "grunt-cli": "^1.3.2",
-    "grunt-mocha-test": "^0.13.3",
     "grunt-sh": "^0.2.0",
     "gruntify-eslint": "^5.0.0",
     "husky": "^1.3.1",
