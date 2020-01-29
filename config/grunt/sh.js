@@ -3,13 +3,13 @@ module.exports = (grunt) => {
 
     return {
         'lint-config': {
-            cmd: `eslint --config config/eslint/config.json ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives *.js config/**/*.js`
+            cmd: `eslint --config config/eslint/config.json --ext .js ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives *.js config/`
         },
         'lint-src': {
-            cmd: `eslint --config config/eslint/src.json ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives src/**/*.js`
+            cmd: `eslint --config config/eslint/src.json --ext .js ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives src/`
         },
         'lint-test': {
-            cmd: `eslint --config config/eslint/test.json ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives test/**/*.js`
+            cmd: `eslint --config config/eslint/test.json --ext .js ${ (fix) ? '--fix ' : '' }--report-unused-disable-directives test/`
         },
         'test-unit': {
             cmd: 'mocha --bail --recursive --require config/mocha/config-unit.js test/unit'
