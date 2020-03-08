@@ -64,6 +64,44 @@ function formStatement (property, expressionAttributeNames) {
     return property + ' = :' + property;
 }
 
+function parse (value) {
+    if (value.BOOL !== undefined) {
+        return value.BOOL;
+    }
+
+    if (value.L !== undefined) {
+        return value.L.map(parse);
+    }
+
+    if (value.M !== undefined) {
+        const map = {};
+
+        for (const key in value.M) {
+            map[key] = parse(value.M[key]);
+        }
+
+        return map;
+    }
+
+    if (value.N !== undefined) {
+        if (value.N.match(/\./)) {
+            return parseFloat(value.N);
+        }
+
+        return parseInt(value.N, 10);
+    }
+
+    if (value.NULL === true) {
+        return null;
+    }
+
+    if (value.S !== undefined) {
+        return value.S;
+    }
+
+    throw new Error('Unsupported data type');
+}
+
 module.exports = {
 
     dataToItem: function (data) { // eslint-disable-line object-shorthand
@@ -133,44 +171,6 @@ module.exports = {
 
     itemToData: function (item) { // eslint-disable-line object-shorthand
         const data = {};
-
-        function parse (value) {
-            if (value.BOOL !== undefined) {
-                return value.BOOL;
-            }
-
-            if (value.L !== undefined) {
-                return value.L.map(parse);
-            }
-
-            if (value.M !== undefined) {
-                const map = {};
-
-                for (const key in value.M) {
-                    map[key] = parse(value.M[key]);
-                }
-
-                return map;
-            }
-
-            if (value.N !== undefined) {
-                if (value.N.match(/\./)) {
-                    return parseFloat(value.N);
-                }
-
-                return parseInt(value.N, 10);
-            }
-
-            if (value.NULL === true) {
-                return null;
-            }
-
-            if (value.S !== undefined) {
-                return value.S;
-            }
-
-            throw new Error('Unsupported data type');
-        }
 
         for (const property in item) {
             if (item[property] !== undefined) {
