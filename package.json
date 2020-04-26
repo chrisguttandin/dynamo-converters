@@ -22,7 +22,7 @@
     "grunt-sh": "^0.2.0",
     "husky": "^4.2.5",
     "load-grunt-config": "^3.0.1",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.2"
   },
   "engines": {
     "node": ">=10.15.3"
