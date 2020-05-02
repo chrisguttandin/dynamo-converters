@@ -1,4 +1,4 @@
-const converters = require('../../src/module.js');
+const converters = require('../../build/node/module');
 
 describe('dynamo-converters', () => {
 

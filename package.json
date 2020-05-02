@@ -52,7 +52,7 @@
     "DynamoDB"
   ],
   "license": "MIT",
-  "main": "src/module.js",
+  "main": "build/node/module.js",
   "name": "dynamo-converters",
   "repository": {
     "type": "git",
@@ -61,6 +61,6 @@
   "scripts": {
     "test": "grunt lint && grunt test"
   },
-  "types": "src/module.d.ts",
+  "types": "build/es2019/module.d.ts",
   "version": "3.1.11"
 }
