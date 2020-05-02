@@ -1,10 +1,10 @@
 const converters = require('../../src/module.js');
 
-describe('dynamo-converters', function () {
+describe('dynamo-converters', () => {
 
-    describe('dataToItem()', function () {
+    describe('dataToItem()', () => {
 
-        it('should add a field called "created" to the item', function () {
+        it('should add a field called "created" to the item', () => {
             const item = converters.dataToItem({});
 
             expect(item).to.contain.a.key('created');
@@ -12,7 +12,7 @@ describe('dynamo-converters', function () {
             expect(item.created).to.deep.equal({ N: item.created.N });
         });
 
-        it('should add a field called "modified" to the item', function () {
+        it('should add a field called "modified" to the item', () => {
             const item = converters.dataToItem({});
 
             expect(item).to.contain.a.key('modified');
@@ -20,37 +20,37 @@ describe('dynamo-converters', function () {
             expect(item.modified).to.deep.equal({ N: item.modified.N });
         });
 
-        it('should convert a property with a value of "null"', function () {
+        it('should convert a property with a value of "null"', () => {
             const item = converters.dataToItem({ null: null });
 
             expect(item.null).to.deep.equal({ NULL: true });
         });
 
-        it('should not convert a property with a value of "undefined"', function () {
+        it('should not convert a property with a value of "undefined"', () => {
             const item = converters.dataToItem({ nothing: undefined });
 
             expect(item).to.have.keys('created', 'modified');
         });
 
-        it('should convert a property of type "boolean"', function () {
+        it('should convert a property of type "boolean"', () => {
             const item = converters.dataToItem({ boolean: true });
 
             expect(item.boolean).to.deep.equal({ BOOL: true });
         });
 
-        it('should convert a property of type "number"', function () {
+        it('should convert a property of type "number"', () => {
             const item = converters.dataToItem({ number: 2 });
 
             expect(item.number).to.deep.equal({ N: '2' });
         });
 
-        it('should convert a property of type "string"', function () {
+        it('should convert a property of type "string"', () => {
             const item = converters.dataToItem({ string: 'lorem ipsum' });
 
             expect(item.string).to.deep.equal({ S: 'lorem ipsum' });
         });
 
-        it('should convert an array', function () {
+        it('should convert an array', () => {
             const item = converters.dataToItem({ array: [ 2, 'lorem ipsum' ] });
 
             expect(item.array).to.deep.equal({ L: [
@@ -59,7 +59,7 @@ describe('dynamo-converters', function () {
             ] });
         });
 
-        it('should convert an object', function () {
+        it('should convert an object', () => {
             const item = converters.dataToItem({ object: { number: 2, string: 'lorem ipsum' } });
 
             expect(item.object).to.deep.equal({ M: {
@@ -68,7 +68,7 @@ describe('dynamo-converters', function () {
             } });
         });
 
-        it('should not convert a property of an object with a value of "undefined"', function () {
+        it('should not convert a property of an object with a value of "undefined"', () => {
             const item = converters.dataToItem({ object: { nothing: undefined } });
 
             expect(item.object).to.deep.equal({ M : {} });
@@ -76,9 +76,9 @@ describe('dynamo-converters', function () {
 
     });
 
-    describe('deltaToExpression()', function () {
+    describe('deltaToExpression()', () => {
 
-        it('should add a field called "modified" to the expression', function () {
+        it('should add a field called "modified" to the expression', () => {
             const expression = converters.deltaToExpression({});
 
             expect(expression.expressionAttributeValues).to.contain.a.key(':modified');
@@ -94,7 +94,7 @@ describe('dynamo-converters', function () {
             });
         });
 
-        it('should convert a property with a value of "null"', function () {
+        it('should convert a property with a value of "null"', () => {
             const expression = converters.deltaToExpression({ null: null });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#null': 'null' });
@@ -104,7 +104,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('SET modified = :modified, #null = :null');
         });
 
-        it('should convert a property of type "boolean"', function () {
+        it('should convert a property of type "boolean"', () => {
             const expression = converters.deltaToExpression({ boolean: true });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#boolean': 'boolean' });
@@ -114,7 +114,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('SET modified = :modified, #boolean = :boolean');
         });
 
-        it('should convert a property of type "number"', function () {
+        it('should convert a property of type "number"', () => {
             const expression = converters.deltaToExpression({ number: 2 });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#number': 'number' });
@@ -124,7 +124,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('SET modified = :modified, #number = :number');
         });
 
-        it('should convert a property of type "string"', function () {
+        it('should convert a property of type "string"', () => {
             const expression = converters.deltaToExpression({ string: 'lorem ipsum' });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#string': 'string' });
@@ -134,7 +134,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('SET modified = :modified, #string = :string');
         });
 
-        it('should convert a property of type "undefined"', function () {
+        it('should convert a property of type "undefined"', () => {
             const expression = converters.deltaToExpression({ nothing: undefined });
 
             expect(expression.expressionAttributeNames).to.be.undefined;
@@ -142,7 +142,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('REMOVE nothing SET modified = :modified');
         });
 
-        it('should convert an array', function () {
+        it('should convert an array', () => {
             const expression = converters.deltaToExpression({ array: [ 2, 'lorem ipsum' ] });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#array': 'array' });
@@ -153,7 +153,7 @@ describe('dynamo-converters', function () {
             expect(expression.updateExpression).to.equal('SET modified = :modified, #array = :array');
         });
 
-        it('should convert an object', function () {
+        it('should convert an object', () => {
             const expression = converters.deltaToExpression({ object: { number: 2, string: 'lorem ipsum' } });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#object': 'object' });
@@ -166,33 +166,33 @@ describe('dynamo-converters', function () {
 
     });
 
-    describe('itemToData()', function () {
+    describe('itemToData()', () => {
 
-        it('should convert a property with a value of "null"', function () {
+        it('should convert a property with a value of "null"', () => {
             const data = converters.itemToData({ null: { NULL: true } });
 
             expect(data).to.deep.equal({ null: null });
         });
 
-        it('should convert a property of type "boolean"', function () {
+        it('should convert a property of type "boolean"', () => {
             const data = converters.itemToData({ boolean: { BOOL: true } });
 
             expect(data).to.deep.equal({ boolean: true });
         });
 
-        it('should convert a property of type "number"', function () {
+        it('should convert a property of type "number"', () => {
             const data = converters.itemToData({ number: { N: '2' } });
 
             expect(data).to.deep.equal({ number: 2 });
         });
 
-        it('should convert a property of type "string"', function () {
+        it('should convert a property of type "string"', () => {
             const data = converters.itemToData({ string: { S: 'lorem ipsum' } });
 
             expect(data).to.deep.equal({ string: 'lorem ipsum' });
         });
 
-        it('should convert an array', function () {
+        it('should convert an array', () => {
             const data = converters.itemToData({ array: { L: [
                 { N: '2' },
                 { S: 'lorem ipsum' }
@@ -201,7 +201,7 @@ describe('dynamo-converters', function () {
             expect(data).to.deep.equal({ array: [ 2, 'lorem ipsum' ] });
         });
 
-        it('should convert an object', function () {
+        it('should convert an object', () => {
             const data = converters.itemToData({ object: { M: {
                 number: { N: '2' },
                 string: { S: 'lorem ipsum' }
