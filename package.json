@@ -52,5 +52,8 @@
     "test": "grunt lint && grunt test"
   },
   "types": "src/module.d.ts",
-  "version": "3.1.11"
+  "version": "3.1.11",
+  "dependencies": {
+    "tsconfig-holy-grail": "^11.0.9"
+  }
 }
