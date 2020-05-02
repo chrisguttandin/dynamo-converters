@@ -54,6 +54,7 @@
   "types": "src/module.d.ts",
   "version": "3.1.11",
   "dependencies": {
+    "grunt-contrib-clean": "^2.0.0",
     "tsconfig-holy-grail": "^11.0.9",
     "tslint": "^6.1.2",
     "tslint-config-holy-grail": "^49.0.2",
