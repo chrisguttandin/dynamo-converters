@@ -1,3 +1,4 @@
+import { now } from './functions/now';
 import { RESERVED_WORDS } from './reserved-words';
 
 const convert = (value: any): any => {
@@ -96,8 +97,8 @@ const parse = (value: any) => {
 };
 
 export const dataToItem = (data: any): any => {
+    const created = now();
     const item: any = { };
-    const now = Date.now();
 
     for (const property of Object.keys(data)) {
         if (data[property] !== undefined) {
@@ -106,16 +107,17 @@ export const dataToItem = (data: any): any => {
     }
 
     item.created = {
-        N: now.toString()
+        N: created
     };
     item.modified = {
-        N: now.toString()
+        N: created
     };
 
     return item;
 };
 
 export const deltaToExpression = (delta: any): any => {
+    const created = now();
     const expressionAttributeNames: any = { };
     const expressionAttributeValues: any = { };
     const removeStatements = [];
@@ -124,9 +126,7 @@ export const deltaToExpression = (delta: any): any => {
 
     setStatements.push('modified = :modified');
     expressionAttributeValues[':modified'] = {
-        N: Date
-            .now()
-            .toString()
+        N: created
     };
 
     for (const property of Object.keys(delta)) {
