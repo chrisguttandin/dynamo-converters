@@ -1,9 +1,26 @@
 import { now } from './functions/now';
+import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
 import { isDataObject } from './guards/data-object';
-import { IDataObject, IExpression } from './interfaces';
+import { isListItemValue } from './guards/list-item-value';
+import { isMapItemValue } from './guards/map-item-value';
+import { isNullItemValue } from './guards/null-item-value';
+import { isNumberItemValue } from './guards/number-item-value';
+import { isStringItemValue } from './guards/string-item-value';
+import { IDataObject, IExpression, IItemObject } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
-import { TArrayType, TDataArray, TDataValue, TItemArray, TItemObject, TItemValue } from './types';
+import {
+    TArrayType,
+    TDataArray,
+    TDataValue,
+    TDerivedDataArray,
+    TDerivedDataObject,
+    TDerivedDataValue,
+    TDerivedItemArray,
+    TDerivedItemObject,
+    TDerivedItemValue,
+    TItemValue
+} from './types';
 
 /*
  * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
@@ -12,49 +29,49 @@ import { TArrayType, TDataArray, TDataValue, TItemArray, TItemObject, TItemValue
 export * from './interfaces/index';
 export * from './types/index';
 
-const convertDataValue = <T extends TDataValue>(value: T): TItemValue<T> => {
+const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> => {
     if (value === null) {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             NULL: true
         };
     }
 
     if (typeof value === 'boolean') {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             BOOL: value
         };
     }
 
     if (typeof value === 'number') {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             N: value.toString()
         };
     }
 
     if (typeof value === 'string') {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             S: value
         };
     }
 
     if (isDataArray(value)) {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             L: convertDataArray(value)
         };
     }
 
     if (isDataObject(value)) {
-        return <TItemValue<T>> {
+        return <TDerivedItemValue<T>> {
             M: convertDataObject(value)
         };
     }
 
     throw new Error('Unsupported data type');
 };
-const convertDataArray = <T extends TDataArray>(array: T): TItemArray<T> => {
-    return array.map((value) => <TItemValue<TArrayType<T>>> convertDataValue(value));
+const convertDataArray = <T extends TDataArray>(array: T): TDerivedItemArray<T> => {
+    return array.map((value) => <TDerivedItemValue<TArrayType<T>>> convertDataValue(value));
 };
-const convertDataObject = <T extends IDataObject>(object: T): TItemObject<T> => {
+const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject<T> => {
     const entries = Object
         .entries(object)
         .filter(([ , value ]) => value !== undefined)
@@ -63,7 +80,7 @@ const convertDataObject = <T extends IDataObject>(object: T): TItemObject<T> => 
     return Object.fromEntries(entries);
 };
 
-const isReservedWord = (property: any) => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
+const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
 const formStatement = (property: string, expressionAttributeNames: { [ key: string ]: string }): string => {
     if (isReservedWord(property)) {
         expressionAttributeNames[`#${ property }`] = property;
@@ -73,45 +90,51 @@ const formStatement = (property: string, expressionAttributeNames: { [ key: stri
 
     return `${ property } = :${ property }`;
 };
-const parse = (value: any) => {
-    if (value.BOOL !== undefined) {
+
+const convertItemValue = (value: TItemValue) => {
+    if (isBooleanItemValue(value)) {
         return value.BOOL;
     }
 
-    if (value.L !== undefined) {
-        return value.L.map(parse);
+    if (isListItemValue(value)) {
+        return convertItemArray(value.L);
     }
 
-    if (value.M !== undefined) {
-        const map: any = { };
-
-        for (const key of Object.keys(value.M)) {
-            map[key] = parse(value.M[key]);
-        }
-
-        return map;
+    if (isMapItemValue(value)) {
+        return convertItemObject(value.M);
     }
 
-    if (value.N !== undefined) {
-        if (value.N.match(/\./)) {
+    if (isNumberItemValue(value)) {
+        if (/\./.test(value.N)) {
             return parseFloat(value.N);
         }
 
         return parseInt(value.N, 10);
     }
 
-    if (value.NULL === true) {
+    if (isNullItemValue(value)) {
         return null;
     }
 
-    if (value.S !== undefined) {
+    if (isStringItemValue(value)) {
         return value.S;
     }
 
     throw new Error('Unsupported data type');
 };
+const convertItemArray = <T extends TItemValue[]>(array: T): TDerivedDataArray<T> => {
+    return array.map((value) => <TDerivedDataValue<TArrayType<T>>> convertItemValue(value));
+};
+const convertItemObject = <T extends IItemObject>(object: T): TDerivedDataObject<T> => {
+    const entries = Object
+        .entries(object)
+        .filter(([ , value ]) => value !== undefined)
+        .map(([ key, value ]) => [ key, convertItemValue(value) ]);
 
-export const dataToItem = <T extends IDataObject>(data: T): TItemObject<T & { created: number; modified: number }> => {
+    return Object.fromEntries(entries);
+};
+
+export const dataToItem = <T extends IDataObject>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
     const created = now();
 
     return convertDataObject({ ...data, created, modified: created });
@@ -119,7 +142,7 @@ export const dataToItem = <T extends IDataObject>(data: T): TItemObject<T & { cr
 
 export const deltaToExpression = <T extends IDataObject>(delta: T): IExpression => {
     const expressionAttributeNames: { [ key: string ]: string } = { };
-    const expressionAttributeValues: TItemObject<IDataObject> = { };
+    const expressionAttributeValues: IItemObject = { };
     const modified = now();
     const removeStatements: string[] = [];
     const setStatements: string[] = [];
@@ -164,14 +187,4 @@ export const deltaToExpression = <T extends IDataObject>(delta: T): IExpression 
 
 };
 
-export const itemToData = (item: any): any => {
-    const data: any = { };
-
-    for (const property of Object.keys(item)) {
-        if (item[property] !== undefined) {
-            data[property] = parse(item[property]);
-        }
-    }
-
-    return data;
-};
+export const itemToData = <T extends IItemObject>(item: T): TDerivedDataObject<T> => convertItemObject(item);

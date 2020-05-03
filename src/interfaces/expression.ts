@@ -1,11 +1,10 @@
-import { TItemObject } from '../types';
-import { IDataObject } from './data-object';
+import { IItemObject } from './item-object';
 
 export interface IExpression {
 
     expressionAttributeNames?: { [ key: string ]: string };
 
-    expressionAttributeValues: TItemObject<IDataObject>;
+    expressionAttributeValues: IItemObject;
 
     updateExpression: string;
 
