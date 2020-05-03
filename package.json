@@ -38,6 +38,8 @@
     "node": ">=10.15.3"
   },
   "files": [
+    "build/es2019/",
+    "build/node/",
     "src/"
   ],
   "homepage": "https://github.com/chrisguttandin/dynamo-converters",
