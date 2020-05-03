@@ -8,6 +8,9 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "dependencies": {
+    "tslib": "^1.11.1"
+  },
   "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
   "devDependencies": {
     "@babel/core": "^7.9.6",
