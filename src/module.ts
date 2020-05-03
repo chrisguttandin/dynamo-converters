@@ -134,28 +134,21 @@ const convertItemObject = <T extends IItemObject>(object: T): TDerivedDataObject
     return Object.fromEntries(entries);
 };
 
-export const dataToItem = <T extends IDataObject>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
+export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
     const created = now();
 
     return convertDataObject({ ...data, created, modified: created });
 };
 
-export const deltaToExpression = <T extends IDataObject>(delta: T): IExpression => {
+export const deltaToExpression = <T extends object>(delta: T): IExpression => {
     const expressionAttributeNames: { [ key: string ]: string } = { };
-    const expressionAttributeValues: IItemObject = { };
     const modified = now();
+    const expressionAttributeValues: IItemObject & { ':modified': { N: string } } = { ':modified': { N: modified.toString() } };
     const removeStatements: string[] = [];
-    const setStatements: string[] = [];
+    const setStatements: string[] = [ 'modified = :modified' ];
     const updateExpressions: string[] = [];
 
-    setStatements.push('modified = :modified');
-    expressionAttributeValues[':modified'] = {
-        N: modified.toString()
-    };
-
-    for (const property of Object.keys(delta)) {
-        const value = delta[property];
-
+    for (const [ property, value ] of Object.entries(delta)) {
         if (value === undefined) {
             if (isReservedWord(property)) {
                 expressionAttributeNames[`#${ property }`] = property;

@@ -13,5 +13,5 @@ export type TDerivedDataValue<T> = T extends IBooleanItemValue
                 : T extends INumberItemValue
                     ? number
                     : T extends IStringItemValue
-                        ? string
+                        ? T['S']
                         : never;
