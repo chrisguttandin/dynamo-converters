@@ -1,7 +1,7 @@
 import { now } from './functions/now';
 import { isDataArray } from './guards/data-array';
 import { isDataObject } from './guards/data-object';
-import { IDataObject } from './interfaces';
+import { IDataObject, IExpression } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
 import { TArrayType, TDataArray, TDataValue, TItemArray, TItemObject, TItemValue } from './types';
 
@@ -112,22 +112,22 @@ const parse = (value: any) => {
 };
 
 export const dataToItem = <T extends IDataObject>(data: T): TItemObject<T & { created: number; modified: number }> => {
-    const created = parseInt(now(), 10);
+    const created = now();
 
     return convertDataObject({ ...data, created, modified: created });
 };
 
-export const deltaToExpression = (delta: any): any => {
-    const created = now();
+export const deltaToExpression = <T extends IDataObject>(delta: T): IExpression => {
     const expressionAttributeNames: { [ key: string ]: string } = { };
-    const expressionAttributeValues: any = { };
-    const removeStatements = [];
-    const setStatements = [];
-    const updateExpressions = [];
+    const expressionAttributeValues: TItemObject<IDataObject> = { };
+    const modified = now();
+    const removeStatements: string[] = [];
+    const setStatements: string[] = [];
+    const updateExpressions: string[] = [];
 
     setStatements.push('modified = :modified');
     expressionAttributeValues[':modified'] = {
-        N: created
+        N: modified.toString()
     };
 
     for (const property of Object.keys(delta)) {
