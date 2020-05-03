@@ -1,55 +1,70 @@
 import { now } from './functions/now';
+import { isDataArray } from './guards/data-array';
+import { isDataObject } from './guards/data-object';
+import { IDataObject } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
+import { TArrayType, TDataArray, TDataValue, TItemArray, TItemObject, TItemValue } from './types';
 
-const convert = (value: any): any => {
+/*
+ * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
+ * isolatedModules compiler option.
+ */
+export * from './interfaces/index';
+export * from './types/index';
+
+const convertDataValue = <T extends TDataValue>(value: T): TItemValue<T> => {
     if (value === null) {
-        return {
+        return <TItemValue<T>> {
             NULL: true
         };
     }
 
     if (typeof value === 'boolean') {
-        return {
+        return <TItemValue<T>> {
             BOOL: value
         };
     }
 
     if (typeof value === 'number') {
-        return {
+        return <TItemValue<T>> {
             N: value.toString()
         };
     }
 
     if (typeof value === 'string') {
-        return {
+        return <TItemValue<T>> {
             S: value
         };
     }
 
-    if (Array.isArray(value)) {
-        return {
-            L: value.map(convert)
+    if (isDataArray(value)) {
+        return <TItemValue<T>> {
+            L: convertDataArray(value)
         };
     }
 
-    if (typeof value === 'object') {
-        const map: any = { };
-
-        for (const key of Object.keys(value)) {
-            if (value[key] !== undefined) {
-                map[key] = convert(value[key]);
-            }
-        }
-
-        return {
-            M: map
+    if (isDataObject(value)) {
+        return <TItemValue<T>> {
+            M: convertDataObject(value)
         };
     }
 
     throw new Error('Unsupported data type');
 };
+const convertDataArray = <T extends TDataArray>(array: T): TItemArray<T> => {
+    return array.map((value) => <TItemValue<TArrayType<T>>> convertDataValue(value));
+};
+const convertDataObject = <T extends IDataObject>(object: T): TItemObject<T> => {
+    const entries = Object
+        .entries(object)
+        .filter(([ , value ]) => value !== undefined)
+        .map(([ key, value ]) => [ key, convertDataValue(value) ]);
+
+    return Object.fromEntries(entries);
+};
+
 const isReservedWord = (property: any) => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
-const formStatement = (property: any, expressionAttributeNames: any) => {
+const formStatement = (property: string, expressionAttributeNames: { [ key: string ]: string }): string => {
     if (isReservedWord(property)) {
         expressionAttributeNames[`#${ property }`] = property;
 
@@ -96,29 +111,15 @@ const parse = (value: any) => {
     throw new Error('Unsupported data type');
 };
 
-export const dataToItem = (data: any): any => {
-    const created = now();
-    const item: any = { };
+export const dataToItem = <T extends IDataObject>(data: T): TItemObject<T & { created: number; modified: number }> => {
+    const created = parseInt(now(), 10);
 
-    for (const property of Object.keys(data)) {
-        if (data[property] !== undefined) {
-            item[property] = convert(data[property]);
-        }
-    }
-
-    item.created = {
-        N: created
-    };
-    item.modified = {
-        N: created
-    };
-
-    return item;
+    return convertDataObject({ ...data, created, modified: created });
 };
 
 export const deltaToExpression = (delta: any): any => {
     const created = now();
-    const expressionAttributeNames: any = { };
+    const expressionAttributeNames: { [ key: string ]: string } = { };
     const expressionAttributeValues: any = { };
     const removeStatements = [];
     const setStatements = [];
@@ -144,7 +145,7 @@ export const deltaToExpression = (delta: any): any => {
                 typeof value === 'string' ||
                 typeof value === 'object') {
             setStatements.push(formStatement(property, expressionAttributeNames));
-            expressionAttributeValues[`:${ property }`] = convert(value);
+            expressionAttributeValues[`:${ property }`] = convertDataValue(value);
         }
     }
 
