@@ -30,43 +30,42 @@ export * from './interfaces/index';
 export * from './types/index';
 
 // @todo This can be replaced with Object.fromEntries() once the support for Node v10 is dropped.
-const fromEntries = (entries: Iterable<readonly any[]>): any => Array
-    .from(entries)
-    .reduce((object, [ property, value ]) => ({ ...object, [ property ]: value }), { });
+const fromEntries = (entries: Iterable<readonly any[]>): any =>
+    Array.from(entries).reduce((object, [property, value]) => ({ ...object, [property]: value }), {});
 
 const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> => {
     if (value === null) {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             NULL: true
         };
     }
 
     if (typeof value === 'boolean') {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             BOOL: value
         };
     }
 
     if (typeof value === 'number') {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             N: value.toString()
         };
     }
 
     if (typeof value === 'string') {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             S: value
         };
     }
 
     if (isDataArray(value)) {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             L: convertDataArray(value)
         };
     }
 
     if (isDataObject(value)) {
-        return <TDerivedItemValue<T>> {
+        return <TDerivedItemValue<T>>{
             M: convertDataObject(value)
         };
     }
@@ -74,27 +73,26 @@ const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> 
     throw new Error('Unsupported data type');
 };
 const convertDataArray = <T extends TDataArray>(array: T): TDerivedItemArray<T> => {
-    return array.map((value) => <TDerivedItemValue<TArrayType<T>>> convertDataValue(value));
+    return array.map((value) => <TDerivedItemValue<TArrayType<T>>>convertDataValue(value));
 };
 
 const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject<T> => {
-    const entries = Object
-        .entries(object)
-        .filter(([ , value ]) => value !== undefined)
-        .map(([ key, value ]) => [ key, convertDataValue(value) ]);
+    const entries = Object.entries(object)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, convertDataValue(value)]);
 
     return fromEntries(entries);
 };
 
 const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
-const formStatement = (property: string, expressionAttributeNames: { [ key: string ]: string }): string => {
+const formStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
     if (isReservedWord(property)) {
-        expressionAttributeNames[`#${ property }`] = property;
+        expressionAttributeNames[`#${property}`] = property;
 
-        return `#${ property } = :${ property }`;
+        return `#${property} = :${property}`;
     }
 
-    return `${ property } = :${ property }`;
+    return `${property} = :${property}`;
 };
 
 const convertItemValue = (value: TItemValue) => {
@@ -129,13 +127,12 @@ const convertItemValue = (value: TItemValue) => {
     throw new Error('Unsupported data type');
 };
 const convertItemArray = <T extends TItemValue[]>(array: T): TDerivedDataArray<T> => {
-    return array.map((value) => <TDerivedDataValue<TArrayType<T>>> convertItemValue(value));
+    return array.map((value) => <TDerivedDataValue<TArrayType<T>>>convertItemValue(value));
 };
 const convertItemObject = <T extends IItemObject>(object: T): TDerivedDataObject<T> => {
-    const entries = Object
-        .entries(object)
-        .filter(([ , value ]) => value !== undefined)
-        .map(([ key, value ]) => [ key, convertItemValue(value) ]);
+    const entries = Object.entries(object)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, convertItemValue(value)]);
 
     return fromEntries(entries);
 };
@@ -147,43 +144,39 @@ export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { 
 };
 
 export const deltaToExpression = <T extends object>(delta: T): IExpression => {
-    const expressionAttributeNames: { [ key: string ]: string } = { };
+    const expressionAttributeNames: { [key: string]: string } = {};
     const modified = now();
     const expressionAttributeValues: IItemObject & { ':modified': { N: string } } = { ':modified': { N: modified.toString() } };
     const removeStatements: string[] = [];
-    const setStatements: string[] = [ 'modified = :modified' ];
+    const setStatements: string[] = ['modified = :modified'];
     const updateExpressions: string[] = [];
 
-    for (const [ property, value ] of Object.entries(delta)) {
+    for (const [property, value] of Object.entries(delta)) {
         if (value === undefined) {
             if (isReservedWord(property)) {
-                expressionAttributeNames[`#${ property }`] = property;
-                removeStatements.push(`#${ property }`);
+                expressionAttributeNames[`#${property}`] = property;
+                removeStatements.push(`#${property}`);
             } else {
                 removeStatements.push(property);
             }
-        } else if (typeof value === 'boolean' ||
-                typeof value === 'number' ||
-                typeof value === 'string' ||
-                typeof value === 'object') {
+        } else if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'object') {
             setStatements.push(formStatement(property, expressionAttributeNames));
-            expressionAttributeValues[`:${ property }`] = convertDataValue(value);
+            expressionAttributeValues[`:${property}`] = convertDataValue(value);
         }
     }
 
     if (removeStatements.length > 0) {
-        updateExpressions.push(`REMOVE ${ removeStatements.join(', ') }`);
+        updateExpressions.push(`REMOVE ${removeStatements.join(', ')}`);
     }
     if (setStatements.length > 0) {
-        updateExpressions.push(`SET ${ setStatements.join(', ') }`);
+        updateExpressions.push(`SET ${setStatements.join(', ')}`);
     }
 
     return {
-        expressionAttributeNames: (Object.keys(expressionAttributeNames).length > 0) ? expressionAttributeNames : undefined,
+        expressionAttributeNames: Object.keys(expressionAttributeNames).length > 0 ? expressionAttributeNames : undefined,
         expressionAttributeValues,
         updateExpression: updateExpressions.join(' ')
     };
-
 };
 
 export const itemToData = <T extends IItemObject>(item: T): TDerivedDataObject<T> => convertItemObject(item);

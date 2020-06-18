@@ -1,7 +1,5 @@
 import { TDataValue } from '../types';
 
 export interface IDataObject {
-
-    [ key: string ]: TDataValue;
-
+    [key: string]: TDataValue;
 }

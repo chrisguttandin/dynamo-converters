@@ -1,9 +1,7 @@
 const converters = require('../../build/node/module');
 
 describe('dynamo-converters', () => {
-
     describe('dataToItem()', () => {
-
         it('should add a field called "created" to the item', () => {
             const item = converters.dataToItem({});
 
@@ -51,33 +49,30 @@ describe('dynamo-converters', () => {
         });
 
         it('should convert an array', () => {
-            const item = converters.dataToItem({ array: [ 2, 'lorem ipsum' ] });
+            const item = converters.dataToItem({ array: [2, 'lorem ipsum'] });
 
-            expect(item.array).to.deep.equal({ L: [
-                { N: '2' },
-                { S: 'lorem ipsum' }
-            ] });
+            expect(item.array).to.deep.equal({ L: [{ N: '2' }, { S: 'lorem ipsum' }] });
         });
 
         it('should convert an object', () => {
             const item = converters.dataToItem({ object: { number: 2, string: 'lorem ipsum' } });
 
-            expect(item.object).to.deep.equal({ M: {
-                number: { N: '2' },
-                string: { S: 'lorem ipsum' }
-            } });
+            expect(item.object).to.deep.equal({
+                M: {
+                    number: { N: '2' },
+                    string: { S: 'lorem ipsum' }
+                }
+            });
         });
 
         it('should not convert a property of an object with a value of "undefined"', () => {
             const item = converters.dataToItem({ object: { nothing: undefined } });
 
-            expect(item.object).to.deep.equal({ M : {} });
+            expect(item.object).to.deep.equal({ M: {} });
         });
-
     });
 
     describe('deltaToExpression()', () => {
-
         it('should add a field called "modified" to the expression', () => {
             const expression = converters.deltaToExpression({});
 
@@ -143,13 +138,10 @@ describe('dynamo-converters', () => {
         });
 
         it('should convert an array', () => {
-            const expression = converters.deltaToExpression({ array: [ 2, 'lorem ipsum' ] });
+            const expression = converters.deltaToExpression({ array: [2, 'lorem ipsum'] });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#array': 'array' });
-            expect(expression.expressionAttributeValues[':array']).to.deep.equal({ L: [
-                { N: '2' },
-                { S: 'lorem ipsum' }
-            ] } );
+            expect(expression.expressionAttributeValues[':array']).to.deep.equal({ L: [{ N: '2' }, { S: 'lorem ipsum' }] });
             expect(expression.updateExpression).to.equal('SET modified = :modified, #array = :array');
         });
 
@@ -157,17 +149,17 @@ describe('dynamo-converters', () => {
             const expression = converters.deltaToExpression({ object: { number: 2, string: 'lorem ipsum' } });
 
             expect(expression.expressionAttributeNames).to.deep.equal({ '#object': 'object' });
-            expect(expression.expressionAttributeValues[':object']).to.deep.equal({ M: {
-                number: { N: '2' },
-                string: { S: 'lorem ipsum' }
-            } });
+            expect(expression.expressionAttributeValues[':object']).to.deep.equal({
+                M: {
+                    number: { N: '2' },
+                    string: { S: 'lorem ipsum' }
+                }
+            });
             expect(expression.updateExpression).to.equal('SET modified = :modified, #object = :object');
         });
-
     });
 
     describe('itemToData()', () => {
-
         it('should convert a property with a value of "null"', () => {
             const data = converters.itemToData({ null: { NULL: true } });
 
@@ -193,23 +185,22 @@ describe('dynamo-converters', () => {
         });
 
         it('should convert an array', () => {
-            const data = converters.itemToData({ array: { L: [
-                { N: '2' },
-                { S: 'lorem ipsum' }
-            ] } });
+            const data = converters.itemToData({ array: { L: [{ N: '2' }, { S: 'lorem ipsum' }] } });
 
-            expect(data).to.deep.equal({ array: [ 2, 'lorem ipsum' ] });
+            expect(data).to.deep.equal({ array: [2, 'lorem ipsum'] });
         });
 
         it('should convert an object', () => {
-            const data = converters.itemToData({ object: { M: {
-                number: { N: '2' },
-                string: { S: 'lorem ipsum' }
-            } } });
+            const data = converters.itemToData({
+                object: {
+                    M: {
+                        number: { N: '2' },
+                        string: { S: 'lorem ipsum' }
+                    }
+                }
+            });
 
             expect(data).to.deep.equal({ object: { number: 2, string: 'lorem ipsum' } });
         });
-
     });
-
 });

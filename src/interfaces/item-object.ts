@@ -1,7 +1,5 @@
 import { TItemValue } from '../types';
 
 export interface IItemObject {
-
-    [ key: string ]: TItemValue;
-
+    [key: string]: TItemValue;
 }
