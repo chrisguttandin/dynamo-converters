@@ -85,11 +85,14 @@ const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject
 };
 
 const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
+const illegalWordRegex = /[\s|.]/g;
+const isIllegalWord = (property: string): boolean => property.match(illegalWordRegex) !== null || isReservedWord(property);
 const formStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
-    if (isReservedWord(property)) {
-        expressionAttributeNames[`#${property}`] = property;
+    if (isIllegalWord(property)) {
+        const propertyName = property.replace(illegalWordRegex, '');
+        expressionAttributeNames[`#${propertyName}`] = property;
 
-        return `#${property} = :${property}`;
+        return `#${propertyName} = :${propertyName}`;
     }
 
     return `${property} = :${property}`;
@@ -153,15 +156,16 @@ export const deltaToExpression = <T extends object>(delta: T): IExpression => {
 
     for (const [property, value] of Object.entries(delta)) {
         if (value === undefined) {
-            if (isReservedWord(property)) {
-                expressionAttributeNames[`#${property}`] = property;
-                removeStatements.push(`#${property}`);
+            if (isIllegalWord(property)) {
+                const propertyName = `#${property.replace(illegalWordRegex, '')}`;
+                expressionAttributeNames[propertyName] = property;
+                removeStatements.push(propertyName);
             } else {
                 removeStatements.push(property);
             }
         } else if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'object') {
             setStatements.push(formStatement(property, expressionAttributeNames));
-            expressionAttributeValues[`:${property}`] = convertDataValue(value);
+            expressionAttributeValues[`:${property.replace(illegalWordRegex, '')}`] = convertDataValue(value);
         }
     }
 
