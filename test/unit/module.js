@@ -157,6 +157,32 @@ describe('dynamo-converters', () => {
             });
             expect(expression.updateExpression).to.equal('SET modified = :modified, #object = :object');
         });
+
+        it('should convert properties with spaces in their name', () => {
+            const expression = converters.deltaToExpression({ 'a property name': 'some value', 'another property name': undefined });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({
+                '#anotherpropertyname': 'another property name',
+                '#apropertyname': 'a property name'
+            });
+            expect(expression.expressionAttributeValues[':apropertyname']).to.deep.equal({ S: 'some value' });
+            expect(expression.updateExpression).to.equal(
+                'REMOVE #anotherpropertyname SET modified = :modified, #apropertyname = :apropertyname'
+            );
+        });
+
+        it('should convert properties with dots in their name', () => {
+            const expression = converters.deltaToExpression({ 'a.property.name': 'some value', 'another.property.name': undefined });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({
+                '#anotherpropertyname': 'another.property.name',
+                '#apropertyname': 'a.property.name'
+            });
+            expect(expression.expressionAttributeValues[':apropertyname']).to.deep.equal({ S: 'some value' });
+            expect(expression.updateExpression).to.equal(
+                'REMOVE #anotherpropertyname SET modified = :modified, #apropertyname = :apropertyname'
+            );
+        });
     });
 
     describe('itemToData()', () => {
