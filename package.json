@@ -8,6 +8,12 @@
             "path": "cz-conventional-changelog"
         }
     },
+    "contributors": [
+        {
+            "email": "sgreenawalt@dasherlawless.com",
+            "name": "Sean Greenawalt"
+        }
+    ],
     "dependencies": {
         "tslib": "^2.0.1"
     },
