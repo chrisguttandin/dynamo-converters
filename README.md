@@ -34,7 +34,7 @@ npm install dynamo-converters
 You can then use `dynamo-converters` by requiring it:
 
 ```js
-var dynamoConverters = require('dynamo-converters');
+import { dataToItem, deltaToExpression, itemToData } from 'dynamo-converters';
 ```
 
 ## Documentation
@@ -50,15 +50,15 @@ In addition to that `dataToItem()` also adds a `created` and `modified` field to
 because the resulting item structure is most likely used to put an item into a DynamoDB table.
 
 ```js
-var data = {
-        object: {
-            nothing: undefined,
-            number: 2,
-            string: 'lorem ipsum'
-        }
-    };
+const data = {
+    object: {
+        nothing: undefined,
+        number: 2,
+        string: 'lorem ipsum'
+    }
+};
 
-console.log(dynamoConverters.dataToItem(data));
+console.log(dataToItem(data));
 
 // {
 //     created: {
@@ -94,15 +94,15 @@ and populates the `expressionAttributeNames` property of the returned object if 
 contains no reserved word this property will be missing.
 
 ```js
-var delta = {
-        nothing: undefined,
-        object: {
-            number: 2,
-            string: 'lorem ipsum'
-        }
-    };
+const delta = {
+    nothing: undefined,
+    object: {
+        number: 2,
+        string: 'lorem ipsum'
+    }
+};
 
-console.log(dynamoConverters.deltaToExpression(delta));
+console.log(deltaToExpression(delta));
 
 // {
 //     expressionAttributeNames: {
@@ -137,22 +137,22 @@ This function takes a structured item returned by the official SDK and turns it 
 JavaScript object.
 
 ```js
-var item = {
-        created: {
-            N: '1448752278557'
-        },
-        modified: {
-            N: '1448752278557'
-        },
-        object: {
-            M: {
-                number: { N: '2' },
-                string: { S: 'lorem ipsum' }
-            }
+const item = {
+    created: {
+        N: '1448752278557'
+    },
+    modified: {
+        N: '1448752278557'
+    },
+    object: {
+        M: {
+            number: { N: '2' },
+            string: { S: 'lorem ipsum' }
         }
-    };
+    }
+};
 
-console.log(dynamoConverters.itemToData(item));
+console.log(itemToData(item));
 
 // {
 //     created: 1448752278557,
