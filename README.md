@@ -164,6 +164,4 @@ console.log(dynamoConverters.itemToData(item));
 // }
 ```
 
-Please have a look at the
-[unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit.js) for
-more examples.
+Please have a look at the [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js) for more examples.
