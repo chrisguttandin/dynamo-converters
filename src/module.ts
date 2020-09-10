@@ -86,14 +86,44 @@ const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject
 
 const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
 const illegalWordRegex = /[\s|.]/g;
-const isIllegalWord = (property: string): boolean => property.match(illegalWordRegex) !== null || isReservedWord(property);
-const formStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
+const isIllegalWord = (property: string): boolean => illegalWordRegex.test(property) || isReservedWord(property);
+const createPropertyName = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
+    let propertyName = property.replace(illegalWordRegex, '');
+    let expressionAttributeName = `#${propertyName}`;
+
+    while (expressionAttributeName in expressionAttributeNames) {
+        propertyName = `${propertyName}_`;
+        expressionAttributeName = `#${propertyName}`;
+    }
+
+    expressionAttributeNames[`#${propertyName}`] = property;
+
+    return propertyName;
+};
+const formRemoveStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
     if (isIllegalWord(property)) {
-        const propertyName = property.replace(illegalWordRegex, '');
-        expressionAttributeNames[`#${propertyName}`] = property;
+        const propertyName = createPropertyName(property, expressionAttributeNames);
+
+        return `#${propertyName}`;
+    }
+
+    return property;
+};
+const formSetStatement = <T extends TDataValue>(
+    property: string,
+    value: T,
+    expressionAttributeNames: { [key: string]: string },
+    expressionAttributeValues: IItemObject & { ':modified': { N: string } }
+): string => {
+    if (isIllegalWord(property)) {
+        const propertyName = createPropertyName(property, expressionAttributeNames);
+
+        expressionAttributeValues[`:${propertyName}`] = convertDataValue(value);
 
         return `#${propertyName} = :${propertyName}`;
     }
+
+    expressionAttributeValues[`:${property}`] = convertDataValue(value);
 
     return `${property} = :${property}`;
 };
@@ -156,16 +186,9 @@ export const deltaToExpression = <T extends object>(delta: T): IExpression => {
 
     for (const [property, value] of Object.entries(delta)) {
         if (value === undefined) {
-            if (isIllegalWord(property)) {
-                const propertyName = `#${property.replace(illegalWordRegex, '')}`;
-                expressionAttributeNames[propertyName] = property;
-                removeStatements.push(propertyName);
-            } else {
-                removeStatements.push(property);
-            }
+            removeStatements.push(formRemoveStatement(property, expressionAttributeNames));
         } else if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'object') {
-            setStatements.push(formStatement(property, expressionAttributeNames));
-            expressionAttributeValues[`:${property.replace(illegalWordRegex, '')}`] = convertDataValue(value);
+            setStatements.push(formSetStatement(property, value, expressionAttributeNames, expressionAttributeValues));
         }
     }
 

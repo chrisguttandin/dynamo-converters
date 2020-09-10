@@ -183,6 +183,24 @@ describe('dynamo-converters', () => {
                 'REMOVE #anotherpropertyname SET modified = :modified, #apropertyname = :apropertyname'
             );
         });
+
+        it('should convert properties with conflicting names', () => {
+            const expression = converters.deltaToExpression({
+                'a property name': undefined,
+                'a.property.name': 'some other value',
+                'apropertyname': 'some value'
+            });
+
+            expect(expression.expressionAttributeNames).to.deep.equal({
+                '#apropertyname': 'a property name',
+                '#apropertyname_': 'a.property.name'
+            });
+            expect(expression.expressionAttributeValues[':apropertyname']).to.deep.equal({ S: 'some value' });
+            expect(expression.expressionAttributeValues[':apropertyname_']).to.deep.equal({ S: 'some other value' });
+            expect(expression.updateExpression).to.equal(
+                'REMOVE #apropertyname SET modified = :modified, #apropertyname_ = :apropertyname_, apropertyname = :apropertyname'
+            );
+        });
     });
 
     describe('itemToData()', () => {
