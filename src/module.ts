@@ -29,10 +29,6 @@ import {
 export * from './interfaces/index';
 export * from './types/index';
 
-// @todo This can be replaced with Object.fromEntries() once the support for Node v10 is dropped.
-const fromEntries = (entries: Iterable<readonly any[]>): any =>
-    Array.from(entries).reduce((object, [property, value]) => ({ ...object, [property]: value }), {});
-
 const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> => {
     if (value === null) {
         return <TDerivedItemValue<T>>{
@@ -81,7 +77,7 @@ const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject
         .filter(([, value]) => value !== undefined)
         .map(([key, value]) => [key, convertDataValue(value)]);
 
-    return fromEntries(entries);
+    return Object.fromEntries(entries);
 };
 
 const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
@@ -167,7 +163,7 @@ const convertItemObject = <T extends IItemObject>(object: T): TDerivedDataObject
         .filter(([, value]) => value !== undefined)
         .map(([key, value]) => [key, convertItemValue(value)]);
 
-    return fromEntries(entries);
+    return Object.fromEntries(entries);
 };
 
 export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
