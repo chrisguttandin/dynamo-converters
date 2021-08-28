@@ -1,6 +1,9 @@
 import { createConvertDataArray } from './factories/convert-data-array';
 import { createConvertDataObject } from './factories/convert-data-object';
 import { createConvertDataValue } from './factories/convert-data-value';
+import { createConvertItemArray } from './factories/convert-item-array';
+import { createConvertItemObject } from './factories/convert-item-object';
+import { createConvertItemValue } from './factories/convert-item-value';
 import { now } from './functions/now';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
@@ -12,7 +15,7 @@ import { isNumberItemValue } from './guards/number-item-value';
 import { isStringItemValue } from './guards/string-item-value';
 import { IExpression, IItemObject } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
-import { TArrayType, TDataValue, TDerivedDataArray, TDerivedDataObject, TDerivedDataValue, TDerivedItemObject, TItemValue } from './types';
+import { TDataValue, TDerivedItemObject } from './types';
 
 /*
  * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
@@ -67,48 +70,6 @@ const formSetStatement = <T extends TDataValue>(
     return `${property} = :${property}`;
 };
 
-const convertItemValue = (value: TItemValue) => {
-    if (isBooleanItemValue(value)) {
-        return value.BOOL;
-    }
-
-    if (isListItemValue(value)) {
-        return convertItemArray(value.L);
-    }
-
-    if (isMapItemValue(value)) {
-        return convertItemObject(value.M);
-    }
-
-    if (isNumberItemValue(value)) {
-        if (/\./.test(value.N)) {
-            return parseFloat(value.N);
-        }
-
-        return parseInt(value.N, 10);
-    }
-
-    if (isNullItemValue(value)) {
-        return null;
-    }
-
-    if (isStringItemValue(value)) {
-        return value.S;
-    }
-
-    throw new Error('Unsupported data type');
-};
-const convertItemArray = <T extends TItemValue[]>(array: T): TDerivedDataArray<T> => {
-    return array.map((value) => <TDerivedDataValue<TArrayType<T>>>convertItemValue(value));
-};
-const convertItemObject = <T extends IItemObject>(object: T): TDerivedDataObject<T> => {
-    const entries = Object.entries(object)
-        .filter(([, value]) => value !== undefined)
-        .map(([key, value]) => [key, convertItemValue(value)]);
-
-    return Object.fromEntries(entries);
-};
-
 export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
     const created = now();
 
@@ -145,4 +106,15 @@ export const deltaToExpression = <T extends object>(delta: T): IExpression => {
     };
 };
 
-export const itemToData = <T extends IItemObject>(item: T): TDerivedDataObject<T> => convertItemObject(item);
+export const itemToData = createConvertItemObject(
+    createConvertItemValue(
+        createConvertItemArray,
+        createConvertItemObject,
+        isBooleanItemValue,
+        isListItemValue,
+        isMapItemValue,
+        isNullItemValue,
+        isNumberItemValue,
+        isStringItemValue
+    )
+);
