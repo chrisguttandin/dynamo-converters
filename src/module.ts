@@ -4,6 +4,7 @@ import { createConvertDataValue } from './factories/convert-data-value';
 import { createConvertItemArray } from './factories/convert-item-array';
 import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
+import { createIsReservedWord } from './factories/is-reserved-word';
 import { now } from './functions/now';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
@@ -26,7 +27,7 @@ export * from './types/index';
 
 const convertDataValue = createConvertDataValue(createConvertDataArray, createConvertDataObject, isDataArray, isDataObject);
 const convertDataObject = createConvertDataObject(convertDataValue);
-const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
+const isReservedWord = createIsReservedWord(RESERVED_WORDS);
 const illegalWordRegex = /[\s|.]/g;
 const isIllegalWord = (property: string): boolean => illegalWordRegex.test(property) || isReservedWord(property);
 const createPropertyName = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
