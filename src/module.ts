@@ -1,3 +1,6 @@
+import { createConvertDataArray } from './factories/convert-data-array';
+import { createConvertDataObject } from './factories/convert-data-object';
+import { createConvertDataValue } from './factories/convert-data-value';
 import { now } from './functions/now';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
@@ -7,20 +10,9 @@ import { isMapItemValue } from './guards/map-item-value';
 import { isNullItemValue } from './guards/null-item-value';
 import { isNumberItemValue } from './guards/number-item-value';
 import { isStringItemValue } from './guards/string-item-value';
-import { IDataObject, IExpression, IItemObject } from './interfaces';
+import { IExpression, IItemObject } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
-import {
-    TArrayType,
-    TDataArray,
-    TDataValue,
-    TDerivedDataArray,
-    TDerivedDataObject,
-    TDerivedDataValue,
-    TDerivedItemArray,
-    TDerivedItemObject,
-    TDerivedItemValue,
-    TItemValue
-} from './types';
+import { TArrayType, TDataValue, TDerivedDataArray, TDerivedDataObject, TDerivedDataValue, TDerivedItemObject, TItemValue } from './types';
 
 /*
  * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
@@ -29,57 +21,8 @@ import {
 export * from './interfaces/index';
 export * from './types/index';
 
-const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> => {
-    if (value === null) {
-        return <TDerivedItemValue<T>>{
-            NULL: true
-        };
-    }
-
-    if (typeof value === 'boolean') {
-        return <TDerivedItemValue<T>>{
-            BOOL: value
-        };
-    }
-
-    if (typeof value === 'number') {
-        return <TDerivedItemValue<T>>{
-            N: value.toString()
-        };
-    }
-
-    if (typeof value === 'string') {
-        return <TDerivedItemValue<T>>{
-            S: value
-        };
-    }
-
-    if (isDataArray(value)) {
-        return <TDerivedItemValue<T>>{
-            L: convertDataArray(value)
-        };
-    }
-
-    if (isDataObject(value)) {
-        return <TDerivedItemValue<T>>{
-            M: convertDataObject(value)
-        };
-    }
-
-    throw new Error('Unsupported data type');
-};
-const convertDataArray = <T extends TDataArray>(array: T): TDerivedItemArray<T> => {
-    return array.map((value) => <TDerivedItemValue<TArrayType<T>>>convertDataValue(value));
-};
-
-const convertDataObject = <T extends IDataObject>(object: T): TDerivedItemObject<T> => {
-    const entries = Object.entries(object)
-        .filter(([, value]) => value !== undefined)
-        .map(([key, value]) => [key, convertDataValue(value)]);
-
-    return Object.fromEntries(entries);
-};
-
+const convertDataValue = createConvertDataValue(createConvertDataArray, createConvertDataObject, isDataArray, isDataObject);
+const convertDataObject = createConvertDataObject(convertDataValue);
 const isReservedWord = (property: string): boolean => RESERVED_WORDS.some((reservedWord) => reservedWord === property.toUpperCase());
 const illegalWordRegex = /[\s|.]/g;
 const isIllegalWord = (property: string): boolean => illegalWordRegex.test(property) || isReservedWord(property);
