@@ -33,7 +33,7 @@ npm install dynamo-converters
 You can then use `dynamo-converters` by requiring it:
 
 ```js
-import { dataToItem, deltaToExpression, itemToData } from 'dynamo-converters';
+import { dataToItem, deltaToUpdateParams, itemToData } from 'dynamo-converters';
 ```
 
 ## Documentation
@@ -70,12 +70,12 @@ Please have a look at the
 [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit.js#L8) for
 more examples.
 
-### expression : deltaToExpression( delta )
+### updateParams : deltaToUpdateParams( delta )
 
-This function takes a plain JavaScript object as input and returns all parts of an expression which
+This function takes a plain JavaScript object as input and returns all necessary update params which
 can then be used with the official SDK.
 
-`deltaToExpression()` also takes care of
+`deltaToUpdateParams()` also takes care of
 [reserved words](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
 and populates the `expressionAttributeNames` property of the returned object if needed. If the delta
 contains no reserved word this property will be missing.
@@ -89,7 +89,7 @@ const delta = {
     }
 };
 
-console.log(deltaToExpression(delta));
+console.log(deltaToUpdateParams(delta));
 
 // {
 //     expressionAttributeNames: {
