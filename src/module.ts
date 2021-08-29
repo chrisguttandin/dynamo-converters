@@ -5,6 +5,7 @@ import { createConvertItemArray } from './factories/convert-item-array';
 import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
 import { createCreatePropertyName } from './factories/create-property-name';
+import { createFormRemoveStatement } from './factories/form-remove-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { now } from './functions/now';
@@ -33,15 +34,7 @@ const isReservedWord = createIsReservedWord(RESERVED_WORDS);
 const illegalWordRegex = /[\s|.]/g;
 const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isIllegalWord = createIsIllegalWord(illegalWordRegex, isReservedWord);
-const formRemoveStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
-    if (isIllegalWord(property)) {
-        const propertyName = createPropertyName(property, expressionAttributeNames);
-
-        return `#${propertyName}`;
-    }
-
-    return property;
-};
+const formRemoveStatement = createFormRemoveStatement(createPropertyName, isIllegalWord);
 const formSetStatement = <T extends TDataValue>(
     property: string,
     value: T,
