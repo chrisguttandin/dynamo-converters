@@ -14,7 +14,7 @@ export const createFormSetStatement =
         property: string,
         value: T,
         expressionAttributeNames: { [key: string]: string },
-        expressionAttributeValues: IItemObject & { ':modified': { N: string } }
+        expressionAttributeValues: IItemObject
     ): string => {
         if (isIllegalWord(property)) {
             const propertyName = createPropertyName(property, expressionAttributeNames);

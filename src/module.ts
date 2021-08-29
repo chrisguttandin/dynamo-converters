@@ -10,7 +10,6 @@ import { createFormRemoveStatement } from './factories/form-remove-statement';
 import { createFormSetStatement } from './factories/form-set-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
-import { now } from './functions/now';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
 import { isDataObject } from './guards/data-object';
@@ -20,7 +19,6 @@ import { isNullItemValue } from './guards/null-item-value';
 import { isNumberItemValue } from './guards/number-item-value';
 import { isStringItemValue } from './guards/string-item-value';
 import { RESERVED_WORDS } from './reserved-words';
-import { TDerivedItemObject } from './types';
 
 /*
  * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
@@ -30,7 +28,6 @@ export * from './interfaces/index';
 export * from './types/index';
 
 const convertDataValue = createConvertDataValue(createConvertDataArray, createConvertDataObject, isDataArray, isDataObject);
-const convertDataObject = createConvertDataObject(convertDataValue);
 const illegalWordRegex = /[\s|.]/g;
 const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isReservedWord = createIsReservedWord(RESERVED_WORDS);
@@ -38,13 +35,9 @@ const isIllegalWord = createIsIllegalWord(illegalWordRegex, isReservedWord);
 const formRemoveStatement = createFormRemoveStatement(createPropertyName, isIllegalWord);
 const formSetStatement = createFormSetStatement(convertDataValue, createPropertyName, isIllegalWord);
 
-export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
-    const created = now();
+export const dataToItem = createConvertDataObject(convertDataValue);
 
-    return convertDataObject({ ...data, created, modified: created });
-};
-
-export const deltaToExpression = createConvertDelta(formRemoveStatement, formSetStatement, now);
+export const deltaToExpression = createConvertDelta(formRemoveStatement, formSetStatement);
 
 export const itemToData = createConvertItemObject(
     createConvertItemValue(

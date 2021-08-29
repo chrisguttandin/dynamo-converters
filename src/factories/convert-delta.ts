@@ -1,20 +1,14 @@
-import type { now as nowFunction } from '../functions/now';
 import { IExpression, IItemObject } from '../interfaces';
 import type { createFormRemoveStatement } from './form-remove-statement';
 import type { createFormSetStatement } from './form-set-statement';
 
 export const createConvertDelta =
-    (
-        formRemoveStatement: ReturnType<typeof createFormRemoveStatement>,
-        formSetStatement: ReturnType<typeof createFormSetStatement>,
-        now: typeof nowFunction
-    ) =>
+    (formRemoveStatement: ReturnType<typeof createFormRemoveStatement>, formSetStatement: ReturnType<typeof createFormSetStatement>) =>
     <T>(delta: T): IExpression => {
         const expressionAttributeNames: { [key: string]: string } = {};
-        const modified = now();
-        const expressionAttributeValues: IItemObject & { ':modified': { N: string } } = { ':modified': { N: modified.toString() } };
+        const expressionAttributeValues: IItemObject = {};
         const removeStatements: string[] = [];
-        const setStatements: string[] = ['modified = :modified'];
+        const setStatements: string[] = [];
         const updateExpressions: string[] = [];
 
         for (const [property, value] of Object.entries(delta)) {
