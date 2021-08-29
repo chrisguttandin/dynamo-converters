@@ -4,6 +4,7 @@ import { createConvertDataValue } from './factories/convert-data-value';
 import { createConvertItemArray } from './factories/convert-item-array';
 import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
+import { createCreatePropertyName } from './factories/create-property-name';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { now } from './functions/now';
 import { isBooleanItemValue } from './guards/boolean-item-value';
@@ -29,20 +30,8 @@ const convertDataValue = createConvertDataValue(createConvertDataArray, createCo
 const convertDataObject = createConvertDataObject(convertDataValue);
 const isReservedWord = createIsReservedWord(RESERVED_WORDS);
 const illegalWordRegex = /[\s|.]/g;
+const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isIllegalWord = (property: string): boolean => illegalWordRegex.test(property) || isReservedWord(property);
-const createPropertyName = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
-    let propertyName = property.replace(illegalWordRegex, '');
-    let expressionAttributeName = `#${propertyName}`;
-
-    while (expressionAttributeName in expressionAttributeNames) {
-        propertyName = `${propertyName}_`;
-        expressionAttributeName = `#${propertyName}`;
-    }
-
-    expressionAttributeNames[`#${propertyName}`] = property;
-
-    return propertyName;
-};
 const formRemoveStatement = (property: string, expressionAttributeNames: { [key: string]: string }): string => {
     if (isIllegalWord(property)) {
         const propertyName = createPropertyName(property, expressionAttributeNames);
