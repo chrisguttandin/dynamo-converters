@@ -5,18 +5,15 @@ describe('createConvertDelta()', () => {
     let convertDelta;
     let formRemoveStatement;
     let formSetStatement;
-    let now;
 
     beforeEach(() => {
         formRemoveStatement = stub();
         formSetStatement = stub();
-        now = stub();
 
-        convertDelta = createConvertDelta(formRemoveStatement, formSetStatement, now);
+        convertDelta = createConvertDelta(formRemoveStatement, formSetStatement);
 
         formRemoveStatement.returns('a fake remove statement');
         formSetStatement.returns('a fake set statement');
-        now.returns(1630256514880);
     });
 
     describe('with an undefined property', () => {
@@ -37,12 +34,8 @@ describe('createConvertDelta()', () => {
             it('should return update params with a remove statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
                     expressionAttributeNames: undefined,
-                    expressionAttributeValues: {
-                        ':modified': {
-                            N: '1630256514880'
-                        }
-                    },
-                    updateExpression: 'REMOVE a fake remove statement SET modified = :modified'
+                    expressionAttributeValues: {},
+                    updateExpression: 'REMOVE a fake remove statement'
                 });
             });
         });
@@ -59,12 +52,8 @@ describe('createConvertDelta()', () => {
             it('should return update params with a remove statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
                     expressionAttributeNames: { new: 'value' },
-                    expressionAttributeValues: {
-                        ':modified': {
-                            N: '1630256514880'
-                        }
-                    },
-                    updateExpression: 'REMOVE a fake remove statement SET modified = :modified'
+                    expressionAttributeValues: {},
+                    updateExpression: 'REMOVE a fake remove statement'
                 });
             });
         });
@@ -81,7 +70,7 @@ describe('createConvertDelta()', () => {
             const [, , expressionAttributeNames, expressionAttributeValues] = formSetStatement.getCall(0).args;
 
             expect(expressionAttributeNames).to.deep.equal({});
-            expect(expressionAttributeValues).to.deep.equal({ ':modified': { N: '1630256514880' } });
+            expect(expressionAttributeValues).to.deep.equal({});
             expect(formSetStatement).to.have.been.calledOnce.and.calledWithExactly(
                 'property',
                 'a string',
@@ -94,12 +83,8 @@ describe('createConvertDelta()', () => {
             it('should return update params with a set statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
                     expressionAttributeNames: undefined,
-                    expressionAttributeValues: {
-                        ':modified': {
-                            N: '1630256514880'
-                        }
-                    },
-                    updateExpression: 'SET modified = :modified, a fake set statement'
+                    expressionAttributeValues: {},
+                    updateExpression: 'SET a fake set statement'
                 });
             });
         });
@@ -116,12 +101,8 @@ describe('createConvertDelta()', () => {
             it('should return update params with a set statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
                     expressionAttributeNames: { new: 'value' },
-                    expressionAttributeValues: {
-                        ':modified': {
-                            N: '1630256514880'
-                        }
-                    },
-                    updateExpression: 'SET modified = :modified, a fake set statement'
+                    expressionAttributeValues: {},
+                    updateExpression: 'SET a fake set statement'
                 });
             });
         });
@@ -139,12 +120,9 @@ describe('createConvertDelta()', () => {
                 expect(convertDelta(delta)).to.deep.equal({
                     expressionAttributeNames: undefined,
                     expressionAttributeValues: {
-                        ':modified': {
-                            N: '1630256514880'
-                        },
-                        'new': 'value'
+                        new: 'value'
                     },
-                    updateExpression: 'SET modified = :modified, a fake set statement'
+                    updateExpression: 'SET a fake set statement'
                 });
             });
         });

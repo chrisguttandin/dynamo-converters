@@ -45,9 +45,6 @@ import { dataToItem, deltaToExpression, itemToData } from 'dynamo-converters';
 This function takes a plain JavaScript object as input and returns a structured item which can then
 be used with the official SDK.
 
-In addition to that `dataToItem()` also adds a `created` and `modified` field to each item. This is
-because the resulting item structure is most likely used to put an item into a DynamoDB table.
-
 ```js
 const data = {
     object: {
@@ -60,12 +57,6 @@ const data = {
 console.log(dataToItem(data));
 
 // {
-//     created: {
-//         N: '1448752278557'
-//     },
-//     modified: {
-//         N: '1448752278557'
-//     },
 //     object: {
 //         M: {
 //             number: { N: '2' },
@@ -83,9 +74,6 @@ more examples.
 
 This function takes a plain JavaScript object as input and returns all parts of an expression which
 can then be used with the official SDK.
-
-In addition to that `deltaToExpression()` also adds a `modified` field to each item. This is
-because the resulting expression is most likely used to update an item of a DynamoDB table.
 
 `deltaToExpression()` also takes care of
 [reserved words](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
@@ -108,9 +96,6 @@ console.log(deltaToExpression(delta));
 //         '#object': 'object'
 //     },
 //     expressionAttributeValues: {
-//         ':modified': {
-//             N: '1448752278557'
-//         },
 //         ':object': {
 //             M: {
 //                 number: {
@@ -122,7 +107,7 @@ console.log(deltaToExpression(delta));
 //             }
 //         }
 //     },
-//     updateExpression: 'REMOVE nothing SET modified = :modified, #object = :object'
+//     updateExpression: 'REMOVE nothing SET #object = :object'
 // }
 ```
 
@@ -137,12 +122,6 @@ JavaScript object.
 
 ```js
 const item = {
-    created: {
-        N: '1448752278557'
-    },
-    modified: {
-        N: '1448752278557'
-    },
     object: {
         M: {
             number: { N: '2' },
@@ -154,8 +133,6 @@ const item = {
 console.log(itemToData(item));
 
 // {
-//     created: 1448752278557,
-//     modified: 1448752278557,
 //     object: {
 //         number: 2,
 //         string: 'lorem ipsum'
