@@ -6,6 +6,7 @@ import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
 import { createCreatePropertyName } from './factories/create-property-name';
 import { createFormRemoveStatement } from './factories/form-remove-statement';
+import { createFormSetStatement } from './factories/form-set-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { now } from './functions/now';
@@ -19,7 +20,7 @@ import { isNumberItemValue } from './guards/number-item-value';
 import { isStringItemValue } from './guards/string-item-value';
 import { IExpression, IItemObject } from './interfaces';
 import { RESERVED_WORDS } from './reserved-words';
-import { TDataValue, TDerivedItemObject } from './types';
+import { TDerivedItemObject } from './types';
 
 /*
  * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
@@ -35,24 +36,7 @@ const illegalWordRegex = /[\s|.]/g;
 const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isIllegalWord = createIsIllegalWord(illegalWordRegex, isReservedWord);
 const formRemoveStatement = createFormRemoveStatement(createPropertyName, isIllegalWord);
-const formSetStatement = <T extends TDataValue>(
-    property: string,
-    value: T,
-    expressionAttributeNames: { [key: string]: string },
-    expressionAttributeValues: IItemObject & { ':modified': { N: string } }
-): string => {
-    if (isIllegalWord(property)) {
-        const propertyName = createPropertyName(property, expressionAttributeNames);
-
-        expressionAttributeValues[`:${propertyName}`] = convertDataValue(value);
-
-        return `#${propertyName} = :${propertyName}`;
-    }
-
-    expressionAttributeValues[`:${property}`] = convertDataValue(value);
-
-    return `${property} = :${property}`;
-};
+const formSetStatement = createFormSetStatement(convertDataValue, createPropertyName, isIllegalWord);
 
 export const dataToItem = <T extends object>(data: T): TDerivedItemObject<T & { created: number; modified: number }> => {
     const created = now();
