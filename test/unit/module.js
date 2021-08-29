@@ -62,72 +62,72 @@ describe('dynamo-converters', () => {
         it('should convert a property with a value of "null"', () => {
             const updateParams = converters.deltaToUpdateParams({ null: null });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#null': 'null' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#null': 'null' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':null': {
                     NULL: true
                 }
             });
-            expect(updateParams.updateExpression).to.equal('SET #null = :null');
+            expect(updateParams.UpdateExpression).to.equal('SET #null = :null');
         });
 
         it('should convert a property of type "boolean"', () => {
             const updateParams = converters.deltaToUpdateParams({ boolean: true });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#boolean': 'boolean' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#boolean': 'boolean' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':boolean': {
                     BOOL: true
                 }
             });
-            expect(updateParams.updateExpression).to.equal('SET #boolean = :boolean');
+            expect(updateParams.UpdateExpression).to.equal('SET #boolean = :boolean');
         });
 
         it('should convert a property of type "number"', () => {
             const updateParams = converters.deltaToUpdateParams({ number: 2 });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#number': 'number' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#number': 'number' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':number': {
                     N: '2'
                 }
             });
-            expect(updateParams.updateExpression).to.equal('SET #number = :number');
+            expect(updateParams.UpdateExpression).to.equal('SET #number = :number');
         });
 
         it('should convert a property of type "string"', () => {
             const updateParams = converters.deltaToUpdateParams({ string: 'lorem ipsum' });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#string': 'string' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#string': 'string' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':string': {
                     S: 'lorem ipsum'
                 }
             });
-            expect(updateParams.updateExpression).to.equal('SET #string = :string');
+            expect(updateParams.UpdateExpression).to.equal('SET #string = :string');
         });
 
         it('should convert a property of type "undefined"', () => {
             const updateParams = converters.deltaToUpdateParams({ nothing: undefined });
 
-            expect(updateParams.expressionAttributeNames).to.be.undefined;
-            expect(updateParams.expressionAttributeValues).to.deep.equal({});
-            expect(updateParams.updateExpression).to.equal('REMOVE nothing');
+            expect(updateParams.ExpressionAttributeNames).to.be.undefined;
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({});
+            expect(updateParams.UpdateExpression).to.equal('REMOVE nothing');
         });
 
         it('should convert an array', () => {
             const updateParams = converters.deltaToUpdateParams({ array: [2, 'lorem ipsum'] });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#array': 'array' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({ ':array': { L: [{ N: '2' }, { S: 'lorem ipsum' }] } });
-            expect(updateParams.updateExpression).to.equal('SET #array = :array');
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#array': 'array' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({ ':array': { L: [{ N: '2' }, { S: 'lorem ipsum' }] } });
+            expect(updateParams.UpdateExpression).to.equal('SET #array = :array');
         });
 
         it('should convert an object', () => {
             const updateParams = converters.deltaToUpdateParams({ object: { number: 2, string: 'lorem ipsum' } });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({ '#object': 'object' });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({ '#object': 'object' });
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':object': {
                     M: {
                         number: { N: '2' },
@@ -135,29 +135,29 @@ describe('dynamo-converters', () => {
                     }
                 }
             });
-            expect(updateParams.updateExpression).to.equal('SET #object = :object');
+            expect(updateParams.UpdateExpression).to.equal('SET #object = :object');
         });
 
         it('should convert properties with spaces in their name', () => {
             const updateParams = converters.deltaToUpdateParams({ 'a property name': 'some value', 'another property name': undefined });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({
                 '#anotherpropertyname': 'another property name',
                 '#apropertyname': 'a property name'
             });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({ ':apropertyname': { S: 'some value' } });
-            expect(updateParams.updateExpression).to.equal('REMOVE #anotherpropertyname SET #apropertyname = :apropertyname');
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({ ':apropertyname': { S: 'some value' } });
+            expect(updateParams.UpdateExpression).to.equal('REMOVE #anotherpropertyname SET #apropertyname = :apropertyname');
         });
 
         it('should convert properties with dots in their name', () => {
             const updateParams = converters.deltaToUpdateParams({ 'a.property.name': 'some value', 'another.property.name': undefined });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({
                 '#anotherpropertyname': 'another.property.name',
                 '#apropertyname': 'a.property.name'
             });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({ ':apropertyname': { S: 'some value' } });
-            expect(updateParams.updateExpression).to.equal('REMOVE #anotherpropertyname SET #apropertyname = :apropertyname');
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({ ':apropertyname': { S: 'some value' } });
+            expect(updateParams.UpdateExpression).to.equal('REMOVE #anotherpropertyname SET #apropertyname = :apropertyname');
         });
 
         it('should convert properties with conflicting names', () => {
@@ -167,15 +167,15 @@ describe('dynamo-converters', () => {
                 'apropertyname': 'some value'
             });
 
-            expect(updateParams.expressionAttributeNames).to.deep.equal({
+            expect(updateParams.ExpressionAttributeNames).to.deep.equal({
                 '#apropertyname': 'a property name',
                 '#apropertyname_': 'a.property.name'
             });
-            expect(updateParams.expressionAttributeValues).to.deep.equal({
+            expect(updateParams.ExpressionAttributeValues).to.deep.equal({
                 ':apropertyname': { S: 'some value' },
                 ':apropertyname_': { S: 'some other value' }
             });
-            expect(updateParams.updateExpression).to.equal(
+            expect(updateParams.UpdateExpression).to.equal(
                 'REMOVE #apropertyname SET #apropertyname_ = :apropertyname_, apropertyname = :apropertyname'
             );
         });
