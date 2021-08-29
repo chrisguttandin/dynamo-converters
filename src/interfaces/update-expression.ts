@@ -1,6 +1,6 @@
 import { IItemObject } from './item-object';
 
-export interface IExpression {
+export interface IUpdateParams {
     expressionAttributeNames?: { [key: string]: string };
 
     expressionAttributeValues: IItemObject;

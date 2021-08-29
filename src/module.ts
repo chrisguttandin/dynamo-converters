@@ -37,7 +37,7 @@ const formSetStatement = createFormSetStatement(convertDataValue, createProperty
 
 export const dataToItem = createConvertDataObject(convertDataValue);
 
-export const deltaToExpression = createConvertDelta(formRemoveStatement, formSetStatement);
+export const deltaToUpdateParams = createConvertDelta(formRemoveStatement, formSetStatement);
 
 export const itemToData = createConvertItemObject(
     createConvertItemValue(
