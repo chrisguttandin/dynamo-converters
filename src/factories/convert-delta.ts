@@ -28,8 +28,8 @@ export const createConvertDelta =
         }
 
         return {
-            expressionAttributeNames: Object.keys(expressionAttributeNames).length > 0 ? expressionAttributeNames : undefined,
-            expressionAttributeValues,
-            updateExpression: updateExpressions.join(' ')
+            ExpressionAttributeNames: Object.keys(expressionAttributeNames).length > 0 ? expressionAttributeNames : undefined,
+            ExpressionAttributeValues: expressionAttributeValues,
+            UpdateExpression: updateExpressions.join(' ')
         };
     };

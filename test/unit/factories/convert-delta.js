@@ -33,9 +33,9 @@ describe('createConvertDelta()', () => {
         describe('without any modifications', () => {
             it('should return update params with a remove statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
-                    expressionAttributeNames: undefined,
-                    expressionAttributeValues: {},
-                    updateExpression: 'REMOVE a fake remove statement'
+                    ExpressionAttributeNames: undefined,
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'REMOVE a fake remove statement'
                 });
             });
         });
@@ -51,9 +51,9 @@ describe('createConvertDelta()', () => {
 
             it('should return update params with a remove statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
-                    expressionAttributeNames: { new: 'value' },
-                    expressionAttributeValues: {},
-                    updateExpression: 'REMOVE a fake remove statement'
+                    ExpressionAttributeNames: { new: 'value' },
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'REMOVE a fake remove statement'
                 });
             });
         });
@@ -82,9 +82,9 @@ describe('createConvertDelta()', () => {
         describe('without any modifications', () => {
             it('should return update params with a set statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
-                    expressionAttributeNames: undefined,
-                    expressionAttributeValues: {},
-                    updateExpression: 'SET a fake set statement'
+                    ExpressionAttributeNames: undefined,
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'SET a fake set statement'
                 });
             });
         });
@@ -100,9 +100,9 @@ describe('createConvertDelta()', () => {
 
             it('should return update params with a set statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
-                    expressionAttributeNames: { new: 'value' },
-                    expressionAttributeValues: {},
-                    updateExpression: 'SET a fake set statement'
+                    ExpressionAttributeNames: { new: 'value' },
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'SET a fake set statement'
                 });
             });
         });
@@ -118,11 +118,11 @@ describe('createConvertDelta()', () => {
 
             it('should return update params with a set statement', () => {
                 expect(convertDelta(delta)).to.deep.equal({
-                    expressionAttributeNames: undefined,
-                    expressionAttributeValues: {
+                    ExpressionAttributeNames: undefined,
+                    ExpressionAttributeValues: {
                         new: 'value'
                     },
-                    updateExpression: 'SET a fake set statement'
+                    UpdateExpression: 'SET a fake set statement'
                 });
             });
         });

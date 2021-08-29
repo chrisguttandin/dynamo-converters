@@ -92,10 +92,10 @@ const delta = {
 console.log(deltaToUpdateParams(delta));
 
 // {
-//     expressionAttributeNames: {
+//     ExpressionAttributeNames: {
 //         '#object': 'object'
 //     },
-//     expressionAttributeValues: {
+//     ExpressionAttributeValues: {
 //         ':object': {
 //             M: {
 //                 number: {
@@ -107,7 +107,7 @@ console.log(deltaToUpdateParams(delta));
 //             }
 //         }
 //     },
-//     updateExpression: 'REMOVE nothing SET #object = :object'
+//     UpdateExpression: 'REMOVE nothing SET #object = :object'
 // }
 ```
 
