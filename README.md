@@ -70,6 +70,22 @@ Please have a look at the
 [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit.js#L8) for
 more examples.
 
+This function is similar to the [`marshall()` function](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#marshall-1) provided by the [@aws-sdk/util-dynamodb package](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#aws-sdkutil-dynamodb) but it preserves the property types.
+
+```js
+dataToItem({ a: 0 });
+// {
+//     a: {
+//         N: string;
+//     };
+// }
+
+marshall({ a: 0 });
+// {
+//     [key: string]: any;
+// }
+```
+
 ### updateParams : deltaToUpdateParams( delta )
 
 This function takes a plain JavaScript object as input and returns all necessary update params which
@@ -141,3 +157,17 @@ console.log(itemToData(item));
 ```
 
 Please have a look at the [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js) for more examples.
+
+This function is similar to the [`unmarshall()` function](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#unmarshall-1) provided by the [@aws-sdk/util-dynamodb package](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#aws-sdkutil-dynamodb) but it preserves the property types.
+
+```js
+itemToData({ a: { N: '1' } });
+// {
+//     a: number;
+// }
+
+unmarshall({ a: { N: '1' } });
+// {
+//     [key: string]: any;
+// }
+```
