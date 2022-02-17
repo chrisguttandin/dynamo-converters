@@ -39,13 +39,13 @@ describe('createConvertDataValue()', () => {
         });
     });
 
-    describe('with a value of type number', () => {
+    describe('with a value of type "number"', () => {
         it('should return an N item value', () => {
             expect(convertDataValue(231)).to.deep.equal({ N: '231' });
         });
     });
 
-    describe('with a value of type number', () => {
+    describe('with a value of type "string"', () => {
         it('should return an S item value', () => {
             expect(convertDataValue('text')).to.deep.equal({ S: 'text' });
         });
