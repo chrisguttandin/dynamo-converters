@@ -17,9 +17,9 @@ items stored inside a DynamoDB table. This is of course necessary to cover all p
 But most of the time a much simpler data structure does the job as well. This little package is made
 for those simple cases.
 
-If you think the official SDK is to verbose but this package does not cover all your needs you might
-want to take a look at [dynamodb-data-types](https://github.com/kayomarz/dynamodb-data-types) by
-[kayomarz](https://github.com/kayomarz).
+If you think the official SDK is too verbose but this package does not cover all your needs you
+might want to take a look at [dynamodb-data-types](https://github.com/kayomarz/dynamodb-data-types)
+by [kayomarz](https://github.com/kayomarz).
 
 ## Getting Started
 
@@ -30,7 +30,7 @@ installed as usual:
 npm install dynamo-converters
 ```
 
-You can then use `dynamo-converters` by requiring it:
+You can then use `dynamo-converters` by importing it:
 
 ```js
 import { addValue, dataToItem, deltaToUpdateParams, itemToData } from 'dynamo-converters';
