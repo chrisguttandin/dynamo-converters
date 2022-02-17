@@ -4,7 +4,7 @@ import type { createConvertDataValue } from './convert-data-value';
 import type { createCreatePropertyName } from './create-property-name';
 import type { createIsIllegalWord } from './is-illegal-word';
 
-export const createFormSetStatement =
+export const createFormValueStatement =
     (
         convertDataValue: ReturnType<typeof createConvertDataValue>,
         createPropertyName: ReturnType<typeof createCreatePropertyName>,

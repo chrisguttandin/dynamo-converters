@@ -1,7 +1,7 @@
-import { createFormSetStatement } from '../../../src/factories/form-set-statement';
+import { createFormValueStatement } from '../../../src/factories/form-value-statement';
 import { stub } from 'sinon';
 
-describe('createFormSetStatement()', () => {
+describe('createFormValueStatement()', () => {
     let convertDataValue;
     let createPropertyName;
     let expressionAttributeNames;
@@ -20,7 +20,7 @@ describe('createFormSetStatement()', () => {
         property = 'a fake property';
         value = 'a fake value';
 
-        formSetStatement = createFormSetStatement(convertDataValue, createPropertyName, isIllegalWord);
+        formSetStatement = createFormValueStatement(convertDataValue, createPropertyName, isIllegalWord);
 
         convertDataValue.returns('a fake item value');
         isIllegalWord.returns(false);

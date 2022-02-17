@@ -2,24 +2,102 @@ import { createConvertDelta } from '../../../src/factories/convert-delta';
 import { stub } from 'sinon';
 
 describe('createConvertDelta()', () => {
+    let addSymbol;
     let convertDelta;
     let formRemoveStatement;
-    let formSetStatement;
+    let formValueStatement;
 
     beforeEach(() => {
+        addSymbol = 'a fake symbol';
         formRemoveStatement = stub();
-        formSetStatement = stub();
+        formValueStatement = stub();
 
-        convertDelta = createConvertDelta(formRemoveStatement, formSetStatement);
-
-        formRemoveStatement.returns('a fake remove statement');
-        formSetStatement.returns('a fake set statement');
+        convertDelta = createConvertDelta(addSymbol, formRemoveStatement, formValueStatement);
     });
 
-    describe('with an undefined property', () => {
+    describe('with a property to add a value', () => {
+        let delta;
+        let property;
+
+        beforeEach(() => {
+            property = [addSymbol, 73];
+            delta = { property };
+
+            formValueStatement.returns('a fake add statement');
+        });
+
+        it('should call formValueStatement()', () => {
+            convertDelta(delta);
+
+            const [, , expressionAttributeNames, expressionAttributeValues] = formValueStatement.getCall(0).args;
+
+            expect(expressionAttributeNames).to.deep.equal({});
+            expect(expressionAttributeValues).to.deep.equal({});
+            expect(formValueStatement).to.have.been.calledOnce.and.calledWithExactly(
+                'property',
+                property[1],
+                expressionAttributeNames,
+                expressionAttributeValues
+            );
+        });
+
+        describe('without any modifications', () => {
+            it('should return update params with am add statement', () => {
+                expect(convertDelta(delta)).to.deep.equal({
+                    ExpressionAttributeNames: undefined,
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'ADD a fake add statement'
+                });
+            });
+        });
+
+        describe('with modified expressionAttributeNames', () => {
+            beforeEach(() => {
+                formValueStatement.callsFake((_1, _2, expressionAttributeNames) => {
+                    expressionAttributeNames['new'] = 'value';
+
+                    return 'a fake add statement';
+                });
+            });
+
+            it('should return update params with an add statement', () => {
+                expect(convertDelta(delta)).to.deep.equal({
+                    ExpressionAttributeNames: { new: 'value' },
+                    ExpressionAttributeValues: {},
+                    UpdateExpression: 'ADD a fake add statement'
+                });
+            });
+        });
+
+        describe('with modified expressionAttributeValues', () => {
+            beforeEach(() => {
+                formValueStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
+                    expressionAttributeValues['new'] = 'value';
+
+                    return 'a fake add statement';
+                });
+            });
+
+            it('should return update params with an add statement', () => {
+                expect(convertDelta(delta)).to.deep.equal({
+                    ExpressionAttributeNames: undefined,
+                    ExpressionAttributeValues: {
+                        new: 'value'
+                    },
+                    UpdateExpression: 'ADD a fake add statement'
+                });
+            });
+        });
+    });
+
+    describe('with a property to delete a value', () => {
         let delta;
 
-        beforeEach(() => (delta = { property: undefined }));
+        beforeEach(() => {
+            delta = { property: undefined };
+
+            formRemoveStatement.returns('a fake remove statement');
+        });
 
         it('should call formRemoveStatement()', () => {
             convertDelta(delta);
@@ -59,72 +137,91 @@ describe('createConvertDelta()', () => {
         });
     });
 
-    describe('with a property with a value other than undefined', () => {
-        let delta;
+    describe('with a property to set a value', () => {
+        const properties = {
+            boolean: false,
+            number: 17,
+            object: {
+                boolean: false,
+                number: 17,
+                string: 'a string'
+            },
+            string: 'a string'
+        };
 
-        beforeEach(() => (delta = { property: 'a string' }));
+        for (const [type, property] of Object.entries(properties)) {
+            describe(`with a property of type "${type}"`, () => {
+                let delta;
 
-        it('should call formSetStatement()', () => {
-            convertDelta(delta);
+                beforeEach(() => {
+                    delta = { property };
 
-            const [, , expressionAttributeNames, expressionAttributeValues] = formSetStatement.getCall(0).args;
+                    formValueStatement.returns('a fake set statement');
+                });
 
-            expect(expressionAttributeNames).to.deep.equal({});
-            expect(expressionAttributeValues).to.deep.equal({});
-            expect(formSetStatement).to.have.been.calledOnce.and.calledWithExactly(
-                'property',
-                'a string',
-                expressionAttributeNames,
-                expressionAttributeValues
-            );
-        });
+                it('should call formValueStatement()', () => {
+                    convertDelta(delta);
 
-        describe('without any modifications', () => {
-            it('should return update params with a set statement', () => {
-                expect(convertDelta(delta)).to.deep.equal({
-                    ExpressionAttributeNames: undefined,
-                    ExpressionAttributeValues: {},
-                    UpdateExpression: 'SET a fake set statement'
+                    const [, , expressionAttributeNames, expressionAttributeValues] = formValueStatement.getCall(0).args;
+
+                    expect(expressionAttributeNames).to.deep.equal({});
+                    expect(expressionAttributeValues).to.deep.equal({});
+                    expect(formValueStatement).to.have.been.calledOnce.and.calledWithExactly(
+                        'property',
+                        property,
+                        expressionAttributeNames,
+                        expressionAttributeValues
+                    );
+                });
+
+                describe('without any modifications', () => {
+                    it('should return update params with a set statement', () => {
+                        expect(convertDelta(delta)).to.deep.equal({
+                            ExpressionAttributeNames: undefined,
+                            ExpressionAttributeValues: {},
+                            UpdateExpression: 'SET a fake set statement'
+                        });
+                    });
+                });
+
+                describe('with modified expressionAttributeNames', () => {
+                    beforeEach(() => {
+                        formValueStatement.callsFake((_1, _2, expressionAttributeNames) => {
+                            expressionAttributeNames['new'] = 'value';
+
+                            return 'a fake set statement';
+                        });
+                    });
+
+                    it('should return update params with a set statement', () => {
+                        expect(convertDelta(delta)).to.deep.equal({
+                            ExpressionAttributeNames: { new: 'value' },
+                            ExpressionAttributeValues: {},
+                            UpdateExpression: 'SET a fake set statement'
+                        });
+                    });
+                });
+
+                describe('with modified expressionAttributeValues', () => {
+                    beforeEach(() => {
+                        formValueStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
+                            expressionAttributeValues['new'] = 'value';
+
+                            return 'a fake set statement';
+                        });
+                    });
+
+                    it('should return update params with a set statement', () => {
+                        expect(convertDelta(delta)).to.deep.equal({
+                            ExpressionAttributeNames: undefined,
+                            ExpressionAttributeValues: {
+                                new: 'value'
+                            },
+                            UpdateExpression: 'SET a fake set statement'
+                        });
+                    });
                 });
             });
-        });
-
-        describe('with modified expressionAttributeNames', () => {
-            beforeEach(() => {
-                formSetStatement.callsFake((_1, _2, expressionAttributeNames) => {
-                    expressionAttributeNames['new'] = 'value';
-
-                    return 'a fake set statement';
-                });
-            });
-
-            it('should return update params with a set statement', () => {
-                expect(convertDelta(delta)).to.deep.equal({
-                    ExpressionAttributeNames: { new: 'value' },
-                    ExpressionAttributeValues: {},
-                    UpdateExpression: 'SET a fake set statement'
-                });
-            });
-        });
-
-        describe('with modified expressionAttributeValues', () => {
-            beforeEach(() => {
-                formSetStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
-                    expressionAttributeValues['new'] = 'value';
-
-                    return 'a fake set statement';
-                });
-            });
-
-            it('should return update params with a set statement', () => {
-                expect(convertDelta(delta)).to.deep.equal({
-                    ExpressionAttributeNames: undefined,
-                    ExpressionAttributeValues: {
-                        new: 'value'
-                    },
-                    UpdateExpression: 'SET a fake set statement'
-                });
-            });
-        });
+        }
     });
 });

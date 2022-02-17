@@ -33,7 +33,7 @@ npm install dynamo-converters
 You can then use `dynamo-converters` by requiring it:
 
 ```js
-import { dataToItem, deltaToUpdateParams, itemToData } from 'dynamo-converters';
+import { addValue, dataToItem, deltaToUpdateParams, itemToData } from 'dynamo-converters';
 ```
 
 ## Documentation
@@ -124,6 +124,28 @@ console.log(deltaToUpdateParams(delta));
 //         }
 //     },
 //     UpdateExpression: 'REMOVE nothing SET #object = :object'
+// }
+```
+
+The `addValue()` function can be used to define an [ADD](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.ADD) action.
+
+```js
+const delta = {
+    counter: addValue(3)
+};
+
+console.log(deltaToUpdateParams(delta));
+
+// {
+//     ExpressionAttributeNames: {
+//         '#counter': 'counter'
+//     },
+//     ExpressionAttributeValues: {
+//         ':counter': {
+//             N: '3'
+//         }
+//     },
+//     UpdateExpression: 'ADD #counter = :counter'
 // }
 ```
 

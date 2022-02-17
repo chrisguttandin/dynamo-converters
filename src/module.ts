@@ -1,3 +1,4 @@
+import { createAddValue } from './factories/add-value';
 import { createConvertDataArray } from './factories/convert-data-array';
 import { createConvertDataObject } from './factories/convert-data-object';
 import { createConvertDataValue } from './factories/convert-data-value';
@@ -7,7 +8,7 @@ import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
 import { createCreatePropertyName } from './factories/create-property-name';
 import { createFormRemoveStatement } from './factories/form-remove-statement';
-import { createFormSetStatement } from './factories/form-set-statement';
+import { createFormValueStatement } from './factories/form-value-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { isBooleanItemValue } from './guards/boolean-item-value';
@@ -27,17 +28,20 @@ import { RESERVED_WORDS } from './reserved-words';
 export * from './interfaces/index';
 export * from './types/index';
 
+const addSymbol = Symbol('add');
 const convertDataValue = createConvertDataValue(createConvertDataArray, createConvertDataObject, isDataArray, isDataObject);
 const illegalWordRegex = /[\s|.]/g;
 const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isReservedWord = createIsReservedWord(RESERVED_WORDS);
 const isIllegalWord = createIsIllegalWord(illegalWordRegex, isReservedWord);
 const formRemoveStatement = createFormRemoveStatement(createPropertyName, isIllegalWord);
-const formSetStatement = createFormSetStatement(convertDataValue, createPropertyName, isIllegalWord);
+const formValueStatement = createFormValueStatement(convertDataValue, createPropertyName, isIllegalWord);
+
+export const addValue = createAddValue(addSymbol);
 
 export const dataToItem = createConvertDataObject(convertDataValue);
 
-export const deltaToUpdateParams = createConvertDelta(formRemoveStatement, formSetStatement);
+export const deltaToUpdateParams = createConvertDelta(addSymbol, formRemoveStatement, formValueStatement);
 
 export const itemToData = createConvertItemObject(
     createConvertItemValue(
