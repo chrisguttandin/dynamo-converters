@@ -4,7 +4,7 @@ import type { createConvertDataValue } from './convert-data-value';
 import type { createCreatePropertyName } from './create-property-name';
 import type { createIsIllegalWord } from './is-illegal-word';
 
-export const createFormValueStatement =
+export const createFormAddStatement =
     (
         convertDataValue: ReturnType<typeof createConvertDataValue>,
         createPropertyName: ReturnType<typeof createCreatePropertyName>,
@@ -21,10 +21,10 @@ export const createFormValueStatement =
 
             expressionAttributeValues[`:${propertyName}`] = convertDataValue(value);
 
-            return `#${propertyName} = :${propertyName}`;
+            return `#${propertyName} :${propertyName}`;
         }
 
         expressionAttributeValues[`:${property}`] = convertDataValue(value);
 
-        return `${property} = :${property}`;
+        return `${property} :${property}`;
     };

@@ -7,8 +7,9 @@ import { createConvertItemArray } from './factories/convert-item-array';
 import { createConvertItemObject } from './factories/convert-item-object';
 import { createConvertItemValue } from './factories/convert-item-value';
 import { createCreatePropertyName } from './factories/create-property-name';
+import { createFormAddStatement } from './factories/form-add-statement';
 import { createFormRemoveStatement } from './factories/form-remove-statement';
-import { createFormValueStatement } from './factories/form-value-statement';
+import { createFormSetStatement } from './factories/form-set-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { isBooleanItemValue } from './guards/boolean-item-value';
@@ -34,14 +35,15 @@ const illegalWordRegex = /[\s|.]/g;
 const createPropertyName = createCreatePropertyName(illegalWordRegex);
 const isReservedWord = createIsReservedWord(RESERVED_WORDS);
 const isIllegalWord = createIsIllegalWord(illegalWordRegex, isReservedWord);
+const formAddStatement = createFormAddStatement(convertDataValue, createPropertyName, isIllegalWord);
 const formRemoveStatement = createFormRemoveStatement(createPropertyName, isIllegalWord);
-const formValueStatement = createFormValueStatement(convertDataValue, createPropertyName, isIllegalWord);
+const formSetStatement = createFormSetStatement(convertDataValue, createPropertyName, isIllegalWord);
 
 export const addValue = createAddValue(addSymbol);
 
 export const dataToItem = createConvertDataObject(convertDataValue);
 
-export const deltaToUpdateParams = createConvertDelta(addSymbol, formRemoveStatement, formValueStatement);
+export const deltaToUpdateParams = createConvertDelta(addSymbol, formAddStatement, formRemoveStatement, formSetStatement);
 
 export const itemToData = createConvertItemObject(
     createConvertItemValue(

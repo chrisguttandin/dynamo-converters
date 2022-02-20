@@ -1,12 +1,14 @@
 import { IItemObject, IUpdateParams } from '../interfaces';
+import type { createFormAddStatement } from './form-add-statement';
 import type { createFormRemoveStatement } from './form-remove-statement';
-import type { createFormValueStatement } from './form-value-statement';
+import type { createFormSetStatement } from './form-set-statement';
 
 export const createConvertDelta =
     (
         addSymbol: symbol,
+        formAddStatement: ReturnType<typeof createFormAddStatement>,
         formRemoveStatement: ReturnType<typeof createFormRemoveStatement>,
-        formValueStatement: ReturnType<typeof createFormValueStatement>
+        formSetStatement: ReturnType<typeof createFormSetStatement>
     ) =>
     <T>(delta: T): IUpdateParams => {
         const addStatements: string[] = [];
@@ -20,9 +22,9 @@ export const createConvertDelta =
             if (value === undefined) {
                 removeStatements.push(formRemoveStatement(property, expressionAttributeNames));
             } else if (Array.isArray(value) && value[0] === addSymbol) {
-                addStatements.push(formValueStatement(property, value[1], expressionAttributeNames, expressionAttributeValues));
+                addStatements.push(formAddStatement(property, value[1], expressionAttributeNames, expressionAttributeValues));
             } else if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'object') {
-                setStatements.push(formValueStatement(property, value, expressionAttributeNames, expressionAttributeValues));
+                setStatements.push(formSetStatement(property, value, expressionAttributeNames, expressionAttributeValues));
             }
         }
 

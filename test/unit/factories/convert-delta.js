@@ -4,15 +4,17 @@ import { stub } from 'sinon';
 describe('createConvertDelta()', () => {
     let addSymbol;
     let convertDelta;
+    let formAddStatement;
     let formRemoveStatement;
-    let formValueStatement;
+    let formSetStatement;
 
     beforeEach(() => {
         addSymbol = 'a fake symbol';
+        formAddStatement = stub();
         formRemoveStatement = stub();
-        formValueStatement = stub();
+        formSetStatement = stub();
 
-        convertDelta = createConvertDelta(addSymbol, formRemoveStatement, formValueStatement);
+        convertDelta = createConvertDelta(addSymbol, formAddStatement, formRemoveStatement, formSetStatement);
     });
 
     describe('with a property to add a value', () => {
@@ -23,17 +25,17 @@ describe('createConvertDelta()', () => {
             property = [addSymbol, 73];
             delta = { property };
 
-            formValueStatement.returns('a fake add statement');
+            formAddStatement.returns('a fake add statement');
         });
 
-        it('should call formValueStatement()', () => {
+        it('should call formAddStatement()', () => {
             convertDelta(delta);
 
-            const [, , expressionAttributeNames, expressionAttributeValues] = formValueStatement.getCall(0).args;
+            const [, , expressionAttributeNames, expressionAttributeValues] = formAddStatement.getCall(0).args;
 
             expect(expressionAttributeNames).to.deep.equal({});
             expect(expressionAttributeValues).to.deep.equal({});
-            expect(formValueStatement).to.have.been.calledOnce.and.calledWithExactly(
+            expect(formAddStatement).to.have.been.calledOnce.and.calledWithExactly(
                 'property',
                 property[1],
                 expressionAttributeNames,
@@ -53,7 +55,7 @@ describe('createConvertDelta()', () => {
 
         describe('with modified expressionAttributeNames', () => {
             beforeEach(() => {
-                formValueStatement.callsFake((_1, _2, expressionAttributeNames) => {
+                formAddStatement.callsFake((_1, _2, expressionAttributeNames) => {
                     expressionAttributeNames['new'] = 'value';
 
                     return 'a fake add statement';
@@ -71,7 +73,7 @@ describe('createConvertDelta()', () => {
 
         describe('with modified expressionAttributeValues', () => {
             beforeEach(() => {
-                formValueStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
+                formAddStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
                     expressionAttributeValues['new'] = 'value';
 
                     return 'a fake add statement';
@@ -156,17 +158,17 @@ describe('createConvertDelta()', () => {
                 beforeEach(() => {
                     delta = { property };
 
-                    formValueStatement.returns('a fake set statement');
+                    formSetStatement.returns('a fake set statement');
                 });
 
-                it('should call formValueStatement()', () => {
+                it('should call formSetStatement()', () => {
                     convertDelta(delta);
 
-                    const [, , expressionAttributeNames, expressionAttributeValues] = formValueStatement.getCall(0).args;
+                    const [, , expressionAttributeNames, expressionAttributeValues] = formSetStatement.getCall(0).args;
 
                     expect(expressionAttributeNames).to.deep.equal({});
                     expect(expressionAttributeValues).to.deep.equal({});
-                    expect(formValueStatement).to.have.been.calledOnce.and.calledWithExactly(
+                    expect(formSetStatement).to.have.been.calledOnce.and.calledWithExactly(
                         'property',
                         property,
                         expressionAttributeNames,
@@ -186,7 +188,7 @@ describe('createConvertDelta()', () => {
 
                 describe('with modified expressionAttributeNames', () => {
                     beforeEach(() => {
-                        formValueStatement.callsFake((_1, _2, expressionAttributeNames) => {
+                        formSetStatement.callsFake((_1, _2, expressionAttributeNames) => {
                             expressionAttributeNames['new'] = 'value';
 
                             return 'a fake set statement';
@@ -204,7 +206,7 @@ describe('createConvertDelta()', () => {
 
                 describe('with modified expressionAttributeValues', () => {
                     beforeEach(() => {
-                        formValueStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
+                        formSetStatement.callsFake((_1, _2, _3, expressionAttributeValues) => {
                             expressionAttributeValues['new'] = 'value';
 
                             return 'a fake set statement';
