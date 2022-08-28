@@ -1,4 +1,4 @@
-import { IItemObject, IUpdateParams } from '../interfaces';
+import { IDataObject, IItemObject, IUpdateParams } from '../interfaces';
 import type { createFormAddStatement } from './form-add-statement';
 import type { createFormRemoveStatement } from './form-remove-statement';
 import type { createFormSetStatement } from './form-set-statement';
@@ -10,7 +10,7 @@ export const createConvertDelta =
         formRemoveStatement: ReturnType<typeof createFormRemoveStatement>,
         formSetStatement: ReturnType<typeof createFormSetStatement>
     ) =>
-    <T>(delta: T): IUpdateParams => {
+    <T extends symbol | IDataObject>(delta: T): IUpdateParams => {
         const addStatements: string[] = [];
         const expressionAttributeNames: { [key: string]: string } = {};
         const expressionAttributeValues: IItemObject = {};
