@@ -1,16 +1,18 @@
-import { IDataObject, IItemObject, IUpdateParams } from '../interfaces';
+import { IItemObject, IUpdateParams } from '../interfaces';
+import { TDataValue } from '../types';
 import type { createFormAddStatement } from './form-add-statement';
 import type { createFormRemoveStatement } from './form-remove-statement';
 import type { createFormSetStatement } from './form-set-statement';
+import type { createIsTuple } from './is-tuple';
 
 export const createConvertDelta =
     (
-        addSymbol: symbol,
         formAddStatement: ReturnType<typeof createFormAddStatement>,
         formRemoveStatement: ReturnType<typeof createFormRemoveStatement>,
-        formSetStatement: ReturnType<typeof createFormSetStatement>
+        formSetStatement: ReturnType<typeof createFormSetStatement>,
+        isTuple: ReturnType<typeof createIsTuple>
     ) =>
-    <T extends symbol | IDataObject>(delta: T): IUpdateParams => {
+    <T extends { [key: string]: TDataValue | [symbol, number] }>(delta: T): IUpdateParams => {
         const addStatements: string[] = [];
         const expressionAttributeNames: { [key: string]: string } = {};
         const expressionAttributeValues: IItemObject = {};
@@ -21,7 +23,7 @@ export const createConvertDelta =
         for (const [property, value] of Object.entries(delta)) {
             if (value === undefined) {
                 removeStatements.push(formRemoveStatement(property, expressionAttributeNames));
-            } else if (Array.isArray(value) && value[0] === addSymbol) {
+            } else if (isTuple(value)) {
                 addStatements.push(formAddStatement(property, value[1], expressionAttributeNames, expressionAttributeValues));
             } else if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'object') {
                 setStatements.push(formSetStatement(property, value, expressionAttributeNames, expressionAttributeValues));

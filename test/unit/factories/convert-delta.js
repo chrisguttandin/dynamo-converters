@@ -2,19 +2,19 @@ import { createConvertDelta } from '../../../src/factories/convert-delta';
 import { stub } from 'sinon';
 
 describe('createConvertDelta()', () => {
-    let addSymbol;
     let convertDelta;
     let formAddStatement;
     let formRemoveStatement;
     let formSetStatement;
+    let isTuple;
 
     beforeEach(() => {
-        addSymbol = 'a fake symbol';
         formAddStatement = stub();
         formRemoveStatement = stub();
         formSetStatement = stub();
+        isTuple = stub();
 
-        convertDelta = createConvertDelta(addSymbol, formAddStatement, formRemoveStatement, formSetStatement);
+        convertDelta = createConvertDelta(formAddStatement, formRemoveStatement, formSetStatement, isTuple);
     });
 
     describe('with a property to add a value', () => {
@@ -22,10 +22,17 @@ describe('createConvertDelta()', () => {
         let property;
 
         beforeEach(() => {
-            property = [addSymbol, 73];
+            property = ['a fake symbol', 73];
             delta = { property };
 
             formAddStatement.returns('a fake add statement');
+            isTuple.returns(true);
+        });
+
+        it('should call isTuple()', () => {
+            convertDelta(delta);
+
+            expect(isTuple).to.have.been.calledOnce.and.calledWithExactly(property);
         });
 
         it('should call formAddStatement()', () => {
@@ -101,6 +108,12 @@ describe('createConvertDelta()', () => {
             formRemoveStatement.returns('a fake remove statement');
         });
 
+        it('should not call isTuple()', () => {
+            convertDelta(delta);
+
+            expect(isTuple).to.have.not.been.called;
+        });
+
         it('should call formRemoveStatement()', () => {
             convertDelta(delta);
 
@@ -159,6 +172,13 @@ describe('createConvertDelta()', () => {
                     delta = { property };
 
                     formSetStatement.returns('a fake set statement');
+                    isTuple.returns(false);
+                });
+
+                it('should call isTuple()', () => {
+                    convertDelta(delta);
+
+                    expect(isTuple).to.have.been.calledOnce.and.calledWithExactly(property);
                 });
 
                 it('should call formSetStatement()', () => {

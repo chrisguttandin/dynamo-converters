@@ -12,6 +12,7 @@ import { createFormRemoveStatement } from './factories/form-remove-statement';
 import { createFormSetStatement } from './factories/form-set-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
+import { createIsTuple } from './factories/is-tuple';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
 import { isDataObject } from './guards/data-object';
@@ -43,7 +44,7 @@ export const addValue = createAddValue(addSymbol);
 
 export const dataToItem = createConvertDataObject(convertDataValue);
 
-export const deltaToUpdateParams = createConvertDelta(addSymbol, formAddStatement, formRemoveStatement, formSetStatement);
+export const deltaToUpdateParams = createConvertDelta(formAddStatement, formRemoveStatement, formSetStatement, createIsTuple(addSymbol));
 
 export const itemToData = createConvertItemObject(
     createConvertItemValue(
