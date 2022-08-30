@@ -12,7 +12,8 @@ export const createConvertDelta =
         formSetStatement: ReturnType<typeof createFormSetStatement>,
         isTuple: ReturnType<typeof createIsTuple>
     ) =>
-    <T extends { [key: string]: TDataValue | [symbol, number] }>(delta: T): IUpdateParams => {
+    // tslint:disable-next-line:no-null-undefined-union
+    <T extends { [key: string]: undefined | [symbol, number] | TDataValue }>(delta: T): IUpdateParams => {
         const addStatements: string[] = [];
         const expressionAttributeNames: { [key: string]: string } = {};
         const expressionAttributeValues: IItemObject = {};
