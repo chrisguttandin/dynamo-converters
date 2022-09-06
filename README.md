@@ -6,15 +6,7 @@
 
 ## Functionality
 
-Amazon's official
-[aws-sdk for JavaScript](https://aws.amazon.com/de/documentation/sdk-for-javascript) uses a
-relatively verbose data structure to
-[put](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property), [update](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property)
-or
-[delete](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property)
-items stored inside a DynamoDB table. This is of course necessary to cover all possible use cases.
-But most of the time a much simpler data structure does the job as well. This little package is made
-for those simple cases.
+Amazon's official [aws-sdk for JavaScript](https://aws.amazon.com/de/documentation/sdk-for-javascript) uses a relatively verbose data structure to [put](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property), [update](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property) or [delete](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property) items stored inside a DynamoDB table. This is necessary to cover all possible use cases. But most of the time a much simpler data structure does the job as well. This little package is made for those cases.
 
 If you think the official SDK is too verbose but this package does not cover all your needs you
 might want to take a look at [dynamodb-data-types](https://github.com/kayomarz/dynamodb-data-types)
