@@ -20,7 +20,7 @@
     "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
     "devDependencies": {
         "@babel/cli": "^7.22.9",
-        "@babel/core": "^7.22.8",
+        "@babel/core": "^7.22.9",
         "@babel/preset-env": "^7.22.7",
         "@babel/register": "^7.22.5",
         "@commitlint/cli": "^17.6.6",
