@@ -15,12 +15,13 @@
         }
     ],
     "dependencies": {
+        "linked": "^0.2.0",
         "tslib": "^2.6.1"
     },
     "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
     "devDependencies": {
         "@babel/cli": "^7.22.15",
-        "@babel/core": "^7.22.17",
+        "@babel/core": "^7.22.19",
         "@babel/preset-env": "^7.22.15",
         "@babel/register": "^7.22.15",
         "@commitlint/cli": "^17.7.1",
