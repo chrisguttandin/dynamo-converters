@@ -15,7 +15,6 @@
         }
     ],
     "dependencies": {
-        "linked": "^0.2.0",
         "tslib": "^2.6.1"
     },
     "description": "A collection of converter functions to get good old JavaScript key/value objects into a DynamoDB friendly schema and back again.",
