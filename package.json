@@ -47,7 +47,7 @@
         "typescript": "^5.3.3"
     },
     "engines": {
-        "node": ">=16.1.0"
+        "node": ">=18.2.0"
     },
     "files": [
         "build/es2019/",
