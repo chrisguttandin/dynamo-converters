@@ -1,10 +1,12 @@
 import type { isDataArray as isDataArrayFunction } from '../guards/data-array';
 import type { isDataObject as isDataObjectFunction } from '../guards/data-object';
-import { TConvertDataArrayFactory, TConvertDataObjectFactory, TDataValue, TDerivedItemValue } from '../types';
+import { TDataValue, TDerivedItemValue } from '../types';
+import type { createConvertDataArray as createConvertDataArrayFunction } from './convert-data-array';
+import type { createConvertDataObject as createConvertDataObjectFunction } from './convert-data-object';
 
 export const createConvertDataValue = (
-    createConvertDataArray: TConvertDataArrayFactory,
-    createConvertDataObject: TConvertDataObjectFactory,
+    createConvertDataArray: typeof createConvertDataArrayFunction,
+    createConvertDataObject: typeof createConvertDataObjectFunction,
     isDataArray: typeof isDataArrayFunction,
     isDataObject: typeof isDataObjectFunction
 ) => {
