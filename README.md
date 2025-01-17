@@ -6,7 +6,7 @@
 
 ## Functionality
 
-Amazon's official [aws-sdk for JavaScript](https://aws.amazon.com/de/documentation/sdk-for-javascript) uses a relatively verbose data structure to [put](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property), [update](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property) or [delete](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property) items stored inside a DynamoDB table. This is necessary to cover all possible use cases. But most of the time a much simpler data structure does the job as well. This little package is made for those cases.
+Amazon's official [aws-sdk for JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/) uses a relatively verbose data structure to [put](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property), [update](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property) or [delete](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property) items stored inside a DynamoDB table. This is necessary to cover all possible use cases. But most of the time a much simpler data structure does the job as well. This little package is made for those cases.
 
 If you think the official SDK is too verbose but this package does not cover all your needs you
 might want to take a look at [dynamodb-data-types](https://github.com/kayomarz/dynamodb-data-types)
@@ -58,7 +58,7 @@ console.log(dataToItem(data));
 ```
 
 Please have a look at the
-[unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit.js#L8) for
+[unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js#L4-L59) for
 more examples.
 
 This function is similar to the [`marshall()` function](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#marshall-1) provided by the [@aws-sdk/util-dynamodb package](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#aws-sdkutil-dynamodb) but it preserves the property types.
@@ -141,7 +141,7 @@ console.log(deltaToUpdateParams(delta));
 ```
 
 Please have a look at the
-[unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit.js#L70) for
+[unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js#L61-L182) for
 more examples.
 
 ### data : itemToData( item )
@@ -169,7 +169,7 @@ console.log(itemToData(item));
 // }
 ```
 
-Please have a look at the [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js) for more examples.
+Please have a look at the [unit tests](https://github.com/chrisguttandin/dynamo-converters/blob/master/test/unit/module.js#L184-L227) for more examples.
 
 This function is similar to the [`unmarshall()` function](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#unmarshall-1) provided by the [@aws-sdk/util-dynamodb package](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html#aws-sdkutil-dynamodb) but it preserves the property types.
 
