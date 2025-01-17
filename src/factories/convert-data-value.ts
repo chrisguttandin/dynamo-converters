@@ -1,6 +1,6 @@
 import type { isDataArray as isDataArrayFunction } from '../guards/data-array';
 import type { isDataObject as isDataObjectFunction } from '../guards/data-object';
-import { TDataValue, TDerivedItemValue } from '../types';
+import { TDerivedItemValue } from '../types';
 import type { createConvertDataArray as createConvertDataArrayFunction } from './convert-data-array';
 import type { createConvertDataObject as createConvertDataObjectFunction } from './convert-data-object';
 
@@ -10,7 +10,7 @@ export const createConvertDataValue = (
     isDataArray: typeof isDataArrayFunction,
     isDataObject: typeof isDataObjectFunction
 ) => {
-    const convertDataValue = <T extends TDataValue>(value: T): TDerivedItemValue<T> => {
+    const convertDataValue = <T>(value: T): TDerivedItemValue<T> => {
         if (value === null) {
             return <TDerivedItemValue<T>>{
                 NULL: true

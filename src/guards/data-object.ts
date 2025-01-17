@@ -1,4 +1,3 @@
 import { IDataObject } from '../interfaces';
-import { TDataValue } from '../types';
 
-export const isDataObject = (value: TDataValue): value is IDataObject => typeof value === 'object';
+export const isDataObject = (value: unknown): value is IDataObject => value !== null && typeof value === 'object';

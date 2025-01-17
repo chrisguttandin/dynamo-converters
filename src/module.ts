@@ -13,6 +13,11 @@ import { createFormSetStatement } from './factories/form-set-statement';
 import { createIsIllegalWord } from './factories/is-illegal-word';
 import { createIsReservedWord } from './factories/is-reserved-word';
 import { createIsTuple } from './factories/is-tuple';
+import { createTransformAndConvertDataObjectFactory } from './factories/transform-and-convert-data-value';
+import { createTransformDataArray } from './factories/transform-data-array';
+import { createTransformDataObject } from './factories/transform-data-object';
+import { createTransformDataValueFactory } from './factories/transform-data-value-factory';
+import { withDateSerialization } from './functions/with-date-serialization';
 import { isBooleanItemValue } from './guards/boolean-item-value';
 import { isDataArray } from './guards/data-array';
 import { isDataObject } from './guards/data-object';
@@ -42,7 +47,15 @@ const formSetStatement = createFormSetStatement(convertDataValue, createProperty
 
 export const addValue = createAddValue(addSymbol);
 
-export const dataToItem = createConvertDataObject(convertDataValue);
+const convertDataObject = createConvertDataObject(convertDataValue);
+
+export const createDataToItem = createTransformAndConvertDataObjectFactory(
+    convertDataObject,
+    createTransformDataValueFactory(createTransformDataArray, createTransformDataObject, isDataArray, isDataObject),
+    createTransformDataObject
+);
+
+export const dataToItem = convertDataObject;
 
 export const deltaToUpdateParams = createConvertDelta(formAddStatement, formRemoveStatement, formSetStatement, createIsTuple(addSymbol));
 
@@ -58,3 +71,5 @@ export const itemToData = createConvertItemObject(
         isStringItemValue
     )
 );
+
+export { withDateSerialization };

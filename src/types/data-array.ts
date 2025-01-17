@@ -1,3 +1,1 @@
-import { TDataValue } from './data-value';
-
-export type TDataArray = TDataValue[];
+export type TDataArray = unknown[];

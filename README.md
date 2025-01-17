@@ -24,12 +24,12 @@ npm install dynamo-converters
 You can then use `dynamo-converters` by importing it:
 
 ```js
-import { addValue, dataToItem, deltaToUpdateParams, itemToData } from 'dynamo-converters';
+import { addValue, createDataToItem, dataToItem, deltaToUpdateParams, itemToData, withDateSerialization } from 'dynamo-converters';
 ```
 
 ## Documentation
 
-`dynamo-converters` does provide three functions:
+`dynamo-converters` does provide the following functions:
 
 ### item : dataToItem( data )
 
@@ -75,6 +75,26 @@ marshall({ a: 0 });
 // {
 //     [key: string]: any;
 // }
+```
+
+### dataToItem : createDataToItem( transformSingleValue )
+
+By default `dataToItem()` only handles values which directly map to the types supported by DynamoDB. If you need to transform certain values before converting them into an item you can create a custom version of `dataToItem()` by using the `createDataToItem()` factory method. It expects to be called with a function that transforms a single value.
+
+Here is an example which turns a `Date` into a `string`.
+
+```js
+import { createDataToItem } from 'dynamo-converters';
+
+const dataToItem = createDataToItem((value) => (value instanceof Date ? value.toJSON() : value));
+```
+
+A function for doing the exact same thing is also provided by `dynamo-converters`. You can therefore simply import it instead.
+
+```js
+import { createDataToItem, withDateSerialization } from 'dynamo-converters';
+
+const dataToItem = createDataToItem(withDateSerialization);
 ```
 
 ### updateParams : deltaToUpdateParams( delta )
@@ -184,3 +204,7 @@ unmarshall({ a: { N: '1' } });
 //     [key: string]: any;
 // }
 ```
+
+### transformedValue : withDateSerialization (value)
+
+This is an example implementation of a custom transform function. In case it gets called with a `Date` it will turn it into a `string`. Any other value gets just passed through as is.
