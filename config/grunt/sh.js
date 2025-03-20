@@ -4,7 +4,7 @@ module.exports = () => {
             cmd: 'npm run build'
         },
         'test-unit': {
-            cmd: 'mocha --bail --parallel --recursive --require config/mocha/config-unit.js test/unit'
+            cmd: 'npm run test:unit'
         }
     };
 };
