@@ -30,7 +30,6 @@
         "cz-conventional-changelog": "^3.3.0",
         "eslint": "^8.57.0",
         "eslint-config-holy-grail": "^60.0.28",
-        "grunt": "^1.6.1",
         "husky": "^9.1.7",
         "lint-staged": "^15.5.0",
         "load-grunt-config": "^4.0.1",
