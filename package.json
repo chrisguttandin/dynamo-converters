@@ -3,6 +3,7 @@
     "bugs": {
         "url": "https://github.com/chrisguttandin/dynamo-converters/issues"
     },
+    "bin": "./bin/dynamo-converters",
     "config": {
         "commitizen": {
             "path": "cz-conventional-changelog"
